@@ -74,7 +74,6 @@ For the CTFd container image you need to use a private registry. For local devel
 
 Create another personal access token in GitLab. This time select the following scopes: **read_registry** and **write_registry**.
 
-<<<<<<< HEAD
 You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources.
 
 ```Bash
@@ -82,9 +81,6 @@ kubectl create namespace ctf-platform
 ```
 
 Use the following command, with your own login credentials to create a Kubernetes secret and output it to Yaml format:
-=======
-You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. Use the following command, with your own login credentials:
->>>>>>> dcf3df42c4d0b78c9e6bb89f122fb1a9c3cc14d8
 
 ```bash
 kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform -o yaml > k8s/1-gitlab-pull-secret.yaml
@@ -104,11 +100,7 @@ The service is now ready at [kubernetes.docker.internal](http://kubernetes.docke
 
 Seeing results:
 ```bash
-<<<<<<< HEAD
-kubectl logs service/ctfd-service -namespace ctf-platform
-=======
 kubectl logs service/ctfd-service -n ctf-platform
->>>>>>> dcf3df42c4d0b78c9e6bb89f122fb1a9c3cc14d8
 ```
 
 

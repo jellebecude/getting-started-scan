@@ -66,10 +66,16 @@ For the CTFd container image you need to use a private registry. For local devel
 
 To do this you first need a personal access token to authenticate with the registry. For the personal access token, in case of GitLab, go to your account and click **Edit Profile**, then go to **Access Tokens**. Here you can type in your token name, an optional expiration date and select scopes. The scopes that need to be selected are **read_registry** and **write_registry**, if these are selected click **Create personal access token**. Save your new access token now, because you won't be able to access it again.
 
-We need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. Use the following command, with your own login credentials:
+You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources.
+
+```Bash
+kubectl create namespace ctf-platform
+```
+
+Use the following command, with your own login credentials to create a Kubernetes secret and output it to Yaml format:
 
 ```bash
-kubectl create secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform -o yaml > k8s/2-gitlab-pull-secret.yaml
+kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform -o yaml > k8s/1-gitlab-pull-secret.yaml
 ```
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded. 
 ## 1.7. CTFd Kubernetes deployment
@@ -85,7 +91,7 @@ The service is now ready at [kubernetes.docker.internal](http://kubernetes.docke
 
 Seeing results:
 ```bash
-kubectl logs service/ctfd-service
+kubectl logs service/ctfd-service -namespace ctf-platform
 ```
 
 

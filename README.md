@@ -6,9 +6,9 @@
   - [1.3. Install and setup Docker Desktop](#13-install-and-setup-docker-desktop)
   - [1.4. Install kubectl](#14-install-kubectl)
   - [1.5. Ingress NGINX controller](#15-ingress-nginx-controller)
-  - [1.6. Private container registry setup](#16-private-container-registry-setup)
-  - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
-  - [1.8. Backup & restore](#18-backup--restore)
+  - [1.6. Cert-manager](#16-cert-manager)
+  - [1.8. CTFd Kubernetes deployment](#18-ctfd-kubernetes-deployment)
+  - [1.9. Backup & restore](#19-backup--restore)
 - [2. Challenges](#2-challenges)
   - [2.1. Solve some challenges!](#21-solve-some-challenges)
   - [2.2. Make your own CTF challenge](#22-make-your-own-ctf-challenge)
@@ -68,7 +68,54 @@ The CTFd deployment on Kubernetes will make use of an ingress controller. That's
 ```Bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
 ```
-## 1.6. Private container registry setup
+
+## 1.6. Cert-manager
+Cert-manager is used to automatically renew certificates, that will be used to make HTTPS possible. A self-signed certificate is sufficient in your local setup. This is already provided in the form of a Kubernetes secret. You'll only have to install cert-manager as preparation:
+```Bash
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
+```
+
+<!-- 
+Create the initial self-signed certificate:
+```Bash
+openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=kubernetes.docker.internal" -days 1024 -out ca.crt
+```
+
+Use the self-signed certificate to create a Kubernetes secret: 
+```Bash
+kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/tls-ca-cert-sec
+ret.yaml
+```
+
+Source: https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91
+Talks about CA certificate is not a CA on MacOS. -->
+
+<!-- Ad-hoc certificate without cert-manager:
+Steps to reproduce a broken ad-hoc HTTPS setup after following the getting started repo
+```
+openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=kubernetes.docker.internal" -days 365
+```
+```
+kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform -o yaml > k8s/tls-cert-secret.yaml
+```
+```
+kubectl get secret kubernetes-docker-internal-tls -n ctf-platform
+```
+Add to the ingress resource under spec
+
+```
+tls:
+  - hosts:
+      - kubernetes.docker.internal
+    secretName: kubernetes-docker-internal-tls
+```
+```
+curl -k https:/kubernetes.docker.internal
+curl --cacert tls.crt https:/kubernetes.docker.internal
+curl --cacert tls.crt https:/kubernetes.docker.internal/setup
+``` -->
+
+## 1.7. Private container registry setup
 
 For the CTFd container image you need to use a private registry. For local development speed. The objective is to get a secret stored in your Kubernetes cluster.
 
@@ -87,7 +134,7 @@ kubectl create --save-config=true secret docker-registry gitlab-pull --docker-se
 ```
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded. 
 
-## 1.7. CTFd Kubernetes deployment
+## 1.8. CTFd Kubernetes deployment
 
 
 Use te following command to deploy all CTFd components described in the manifest:
@@ -106,11 +153,13 @@ kubectl logs service/ctfd-service -n ctf-platform
 
 You can now finish the setup. The required fields are: **Event Name** > **Admin Username**, **Admin Email** and **Admin Password**.
 
+When you logout of the admin account, you're able to login with an account of a supported school (Hogeschool Utrecht).
+
 If you want to cleanup, the following command can be used.
 ```bash
 kubectl delete -f k8s/
 ```
-## 1.8. Backup & restore
+## 1.9. Backup & restore
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
 
 You can restore a backup by importing the zip file included in this repository, it will load some basic challenges for you. To import the backup, go to **Admin Panel**, then click **Config** in the top menu. You will see **Backup** in the sidebar and click on **Import**. Choose the zip included or one of yourself and click on **Import**. 

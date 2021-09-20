@@ -46,7 +46,7 @@ spec:
             - name: SURF_CLIENT_ID
               value: ctfd.jointcyberrange.nl
             - name: SURF_CLIENT_SECRET
-              value: wEQ8RxmKw0L1CD6yT6gY
+              value: MyMERqI8QPo7eYVlp6jF
           image: registry.gitlab.com/hu-hc/jcr/platform/ctf-platform/master:latest
           name: ctfd
           ports:
@@ -54,6 +54,27 @@ spec:
           resources: {}
       restartPolicy: Always
 status: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ca-issuer
+  namespace: ctf-platform
+spec:
+  ca:
+    secretName: ca-key-pair
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kubernetes-docker-internal
+  namespace: ctf-platform
+spec:
+  secretName: kubernetes-docker-internal-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: kubernetes.docker.internal
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -63,11 +84,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
 spec:
+  tls:
+    - hosts:
+        - kubernetes.docker.internal
+      secretName: kubernetes-docker-internal-tls
   rules:
     - host: "kubernetes.docker.internal"
       http:
         paths:
-          - pathType: Prefix
+          - pathType: ImplementationSpecific
             path: "/"
             backend:
               service:

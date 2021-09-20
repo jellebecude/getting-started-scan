@@ -1,17 +1,19 @@
-- [1. CTFd local deployment](#1-ctfd-local-deployment)
+- [1. CTFd local deployment test](#1-ctfd-local-deployment-test)
   - [1.1. CTFd local K8s deployment](#11-ctfd-local-k8s-deployment)
-  - [1.2. Visual Studio Code](#12-visual-studio-code)
+  - [1.2. GitLab & Visual Studio Code](#12-gitlab--visual-studio-code)
+    - [1.2.1. Gitlab code repository access](#121-gitlab-code-repository-access)
+    - [1.2.2. Visual Studio Code setup](#122-visual-studio-code-setup)
   - [1.3. Install and setup Docker Desktop](#13-install-and-setup-docker-desktop)
   - [1.4. Install kubectl](#14-install-kubectl)
   - [1.5. Ingress NGINX controller](#15-ingress-nginx-controller)
-  - [1.6. Set up a private container registry](#16-set-up-a-private-container-registry)
+  - [1.6. Private container registry setup](#16-private-container-registry-setup)
   - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
   - [1.8. Backup & restore](#18-backup--restore)
 - [2. Challenges](#2-challenges)
   - [2.1. Solve some challenges!](#21-solve-some-challenges)
   - [2.2. Make your own CTF challenge](#22-make-your-own-ctf-challenge)
 
-# 1. CTFd local deployment
+# 1. CTFd local deployment test
 
 CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our case is running within Kubernetes. The original project's repository can be found [here](https://github.com/CTFd/CTFd), while [this](https://gitlab.com/hu-hc/jcr/platform/ctf-platform) is the location of the JCR's forked repository.
 
@@ -27,9 +29,15 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
 
 - **Note:** This documentation continues with Docker Desktop on Windows, while WSL2 will be utilized to run bash commands. The experience on MacOS and Linux should be close because of this.
 
-## 1.2. Visual Studio Code
+## 1.2. GitLab & Visual Studio Code
 
-VS Code is our IDE of choice. It is open source and offers a big catalogue of extensions. Git source control is natively integrated, for you to manage version control straight from within the IDE. Download and install it for [your system](https://code.visualstudio.com/download). Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: https://gitlab.com/hu-hc/jcr/jcr-getting-started. 
+The Joint Cyber Range utilizes the GitLab free tier for its code archive and CI pipeline. Whereas, VS Code is our IDE of choice. It is open source and offers a big catalogue of extensions. Git source control is natively integrated, for you to manage version control straight from within the IDE. Download and install it for [your system](https://code.visualstudio.com/download). Next you need to setup access to the code repository in GitLab.
+
+### 1.2.1. Gitlab code repository access
+You need a personal access token, to authenticate with the code repository using the HTTPS clone mechanism. For the personal access token, in case of GitLab, go to your account and click **Edit Profile**, then go to **Access Tokens**. Here you can type in your token name, an optional expiration date and select scopes. The scopes that need to be selected are **read_repository** and **write_repository**, if these are selected click **Create personal access token**. Save your new access token now, because you won't be able to access it again.
+
+### 1.2.2. Visual Studio Code setup
+Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: https://gitlab.com/hu-hc/jcr/jcr-getting-started. Login in to GitLab by using your personal access token. When the files are loaded, respond to the notice in the left corner and open the cloned repository.
 
 ## 1.3. Install and setup Docker Desktop
 
@@ -60,18 +68,19 @@ The CTFd deployment on Kubernetes will make use of an ingress controller. That's
 ```Bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
 ```
-## 1.6. Set up a private container registry
+## 1.6. Private container registry setup
 
 For the CTFd container image you need to use a private registry. For local development speed. The objective is to get a secret stored in your Kubernetes cluster.
 
-To do this you first need a personal access token to authenticate with the registry. For the personal access token, in case of GitLab, go to your account and click **Edit Profile**, then go to **Access Tokens**. Here you can type in your token name, an optional expiration date and select scopes. The scopes that need to be selected are **read_registry** and **write_registry**, if these are selected click **Create personal access token**. Save your new access token now, because you won't be able to access it again.
+Create another personal access token in GitLab. This time select the following scopes: **read_registry** and **write_registry**.
 
-We need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. Use the following command, with your own login credentials:
+You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. Use the following command, with your own login credentials:
 
 ```bash
 kubectl create secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform -o yaml > k8s/2-gitlab-pull-secret.yaml
 ```
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded. 
+
 ## 1.7. CTFd Kubernetes deployment
 
 
@@ -85,7 +94,7 @@ The service is now ready at [kubernetes.docker.internal](http://kubernetes.docke
 
 Seeing results:
 ```bash
-kubectl logs service/ctfd-service
+kubectl logs service/ctfd-service -n ctf-platform
 ```
 
 

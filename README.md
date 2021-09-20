@@ -141,3 +141,5 @@ Try to think of a basic CTF challenge that somebody else must be able to solve.
 **3.** Package it all up as a docker-compose file and test. If it works, you can encode your docker-compose file
 
 **4.** Upload the challenge and test if the deployment and flag input work. Export your static and container-based challenges and share it with somebody to solve.
+
+test login

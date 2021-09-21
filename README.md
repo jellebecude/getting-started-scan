@@ -16,6 +16,7 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
   - [1.5. Ingress NGINX controller](#15-ingress-nginx-controller)
   - [1.6. Cert-manager](#16-cert-manager)
   - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
+    - [1.7.1. Verification of deployed resources (optional)](#171-verification-of-deployed-resources-optional)
   - [1.8. Backup & restore](#18-backup--restore)
   - [1.9. Challenges](#19-challenges)
     - [1.9.1. Solve some challenges](#191-solve-some-challenges)
@@ -110,7 +111,7 @@ kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca
 ret.yaml
 ```
 
-Source: https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91
+Source: <https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91>
 **Note:** Talks about CA certificate is not a CA on MacOS, but is from 2018.
 
 <!-- Ad-hoc certificate without cert-manager:
@@ -190,6 +191,47 @@ You can now finish the setup. The required fields are: **Event Name** > **Admin 
 
 When you logout of the admin account, you're able to login with an account of a supported school (Hogeschool Utrecht).
 
+### 1.7.1. Verification of deployed resources (optional)
+
+Information about the application's deployment can be displayed with.
+
+```Bash
+kubectl describe deployment ctfd -n ctf-platform
+```
+
+Service information can be displayed with.
+
+```Bash
+kubectl describe service -n ctf-platform
+```
+
+Check the created Kubernetes secrets.
+
+```Bash
+kubectl get secret ca-key-pair kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
+kubectl describe secret ca-key-pair kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
+```
+
+Check that the ingress resource `HOSTS` is mapped to [kubernetes.docker.internal](http://kubernetes.docker.internal), with `ADDRESS` mapped to [localhost](http://localhost).
+
+```Bash
+kubectl get ingress -n ctf-platform
+kubectl describe ingress -n ctf-platform
+```
+
+Check the custom resources related to cert-manager.
+
+```Bash
+kubectl get Issuers,Certificates --all-namespaces
+```
+
+Or see all the results at once.
+
+```Bash
+kubectl get namespace,deployments,service,ingress,secret,Issuer,Certificates -n ctf-platform
+kubectl describe deployments,service,ingress,secret,Issuer,Certificates -n ctf-platform
+```
+
 ## 1.8. Backup & restore
 
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
@@ -243,6 +285,12 @@ The following command will delete all custom created resources.
 
 ```Bash
 kubectl delete -f k8s/
+```
+
+The namespace you've created, will have to be manually deleted.
+
+```Bash
+kubectl delete namespace ctf-platform
 ```
 
 Uninstall cert-manager.

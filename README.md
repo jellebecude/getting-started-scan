@@ -101,14 +101,19 @@ kubectl get pods -n cert-manager --watch
 Create the initial self-signed CA (Certificate Authority) certificate.
 
 ```Bash
+openssl genrsa -out ca.key 2048
+```
+
+Create a certificate for the relevant DNS name with the newly created CA key.
+
+```Bash
 openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=kubernetes.docker.internal" -days 1024 -out ca.crt
 ```
 
 Use the self-signed certificate to create a Kubernetes secret.
 
 ```Bash
-kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/tls-ca-cert-sec
-ret.yaml
+kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/tls-ca-cert-secret.yaml
 ```
 
 Source: <https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91>

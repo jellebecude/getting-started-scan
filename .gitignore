@@ -1,1 +1,3 @@
 /k8s/1-gitlab-pull-secret.yaml
+ca.crt
+ca.key

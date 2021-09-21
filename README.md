@@ -20,6 +20,7 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
   - [1.9. Challenges](#19-challenges)
     - [1.9.1. Solve some challenges](#191-solve-some-challenges)
     - [1.9.2. Make your own CTF challenge](#192-make-your-own-ctf-challenge)
+  - [1.10. Clean-up](#110-clean-up)
 
 ## 1.1. CTFd local K8s deployment
 
@@ -160,12 +161,6 @@ You can now finish the setup. The required fields are: **Event Name** > **Admin 
 
 When you logout of the admin account, you're able to login with an account of a supported school (Hogeschool Utrecht).
 
-If you want to cleanup, the following command can be used.
-
-```bash
-kubectl delete -f k8s/
-```
-
 ## 1.8. Backup & restore
 
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
@@ -181,6 +176,7 @@ Events focussed on professionals or internal training, try to simulate realistic
 
 In the zip file are some basic challenges included, from various CTF categories. Solve these to get a glimpse of how a CTF works.
 
+User credentials:
 Username: user
 Password: user
 
@@ -192,7 +188,7 @@ Password: user
 
 Try to think of a basic CTF challenge that somebody else must be able to solve.
 
-- Design and make a static text or upload based challenge first and save it in CTFd.
+- Design and make a static text or upload based challenge first
 - Move on to creating a container-based challenge.
 
 **Instructions container-based challenge:**
@@ -203,3 +199,32 @@ Try to think of a basic CTF challenge that somebody else must be able to solve.
 **3.** Package it all up as a docker-compose file and test. If it works, you can encode your docker-compose file
 
 **4.** Upload the challenge and test if the deployment and flag input work. Export your static and container-based challenges and share it with somebody to solve.
+
+**Add your challenges to CTFd**
+You can login as admin and add your newly made challenges to the catalogue. Export your CTF event and share it, to get your challenges peer reviewed.
+
+Admin credentials:
+Username: admin
+Password: jcr
+
+## 1.10. Clean-up
+
+The following command will delete all custom created resources.
+
+```Bash
+kubectl delete -f k8s/
+```
+
+Uninstall cert-manager:
+
+```Bash
+kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/vX.Y.Z/cert-manager.yaml
+```
+
+Uninstall the NGINX ingress controller:
+
+```Bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
+```
+
+If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be reset.

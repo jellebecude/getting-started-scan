@@ -301,7 +301,7 @@ kubectl delete namespace ctf-platform
 Uninstall cert-manager.
 
 ```Bash
-kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/vX.Y.Z/cert-manager.yaml
+kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 ```
 
 Uninstall the NGINX ingress controller.

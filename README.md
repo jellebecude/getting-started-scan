@@ -17,10 +17,12 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
   - [1.6. Cert-manager](#16-cert-manager)
   - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
   - [1.8. Backup & restore](#18-backup--restore)
-- [2. Challenges](#2-challenges)
-  - [2.1. Solve some challenges](#21-solve-some-challenges)
-  - [2.2. Make your own CTF challenge](#22-make-your-own-ctf-challenge)
-  - [2.3. Clean-up](#23-clean-up)
+  - [1.9. Challenges](#19-challenges)
+    - [1.9.1. Solve some challenges](#191-solve-some-challenges)
+    - [1.9.2. Make your own CTF challenge](#192-make-your-own-ctf-challenge)
+    - [1.9.3. Instructions container-based challenge](#193-instructions-container-based-challenge)
+    - [1.9.4. Add your challenges to CTFd](#194-add-your-challenges-to-ctfd)
+  - [1.10. Clean-up](#110-clean-up)
 
 ## 1.1. CTFd local K8s deployment
 
@@ -177,12 +179,12 @@ Admin credentials:
 Username: admin
 Password: jcr
 
-# 2. Challenges
+## 1.9. Challenges
 
 CTF challenges basically run down to; IT/CYber Security puzzles, a digital scavenger hunt or escape room. Various types of CTF events exist, while CTFd makes it possible to host Jeopardy Style events.
 Events focussed on professionals or internal training, try to simulate realistic Cyber Security scenarios. Attack/Defense games or Red vs Blue scenarios, is where the Joint Cyber Range will be heading to in the future.
 
-## 2.1. Solve some challenges
+### 1.9.1. Solve some challenges
 
 In the zip file are some basic challenges included, from various CTF categories. Solve these to get a glimpse of how a CTF works.
 
@@ -193,14 +195,15 @@ Password: user
 **Title:** SSH
 **Description:** Alice makes use of bad password hygiene on her server. Retrieve the content of the hidden message.
 
-## 2.2. Make your own CTF challenge
+### 1.9.2. Make your own CTF challenge
 
 Try to think of a basic CTF challenge that somebody else must be able to solve.
 
 - Design and make a static text or upload based challenge first and save it in CTFd.
 - Move on to creating a container-based challenge.
 
-**Instructions container-based challenge:**
+### 1.9.3. Instructions container-based challenge
+
 **1.** Create a dockerfile for the container(s) you want to include in the challenge. **Note:** All necessary files that it interacts with, must be included in the image.
 
 **2.** Build and try your image. When you're satisfied, upload the container image to a container registry.
@@ -209,10 +212,11 @@ Try to think of a basic CTF challenge that somebody else must be able to solve.
 
 **4.** Upload the challenge and test if the deployment and flag input work. Export your static and container-based challenges and share it with somebody to solve.
 
-**Add your challenges to CTFd**
+### 1.9.4. Add your challenges to CTFd
+
 You can login as admin and add your newly made challenges to the catalogue. Export your CTF event and share it, to get your challenges peer reviewed.
 
-## 2.3. Clean-up
+## 1.10. Clean-up
 
 The following command will delete all custom created resources.
 

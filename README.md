@@ -65,38 +65,53 @@ Kubectl is the CLI tool to interact with Kubernetes clusters. The following [lin
 Make sure your kube-config file is in the right location, and includes the correct cluster. On Windows it can be found in: `%USERPROFILE%\.kube\config` or (Mac/Linux `~/.kube/config`) .
 For alternative locations you can make it known to kubectl with: e.g. `export KUBECONFIG=Path/kube.config` (Linux/MacOS version).
 
-Test with: `kubectl get nodes`, you'll see your Kubernetes cluster name show up.
+Test with: `kubectl get nodes`, you'll see your Kubernetes cluster nodes and name show up.
 
 ## 1.5. Ingress NGINX controller
 
-The CTFd deployment on Kubernetes will make use of an ingress controller. That's a Kubernetes similar to reverse proxy and load balancing functionality. Install the Ingress Nginx controller for Docker Desktop:
+The CTFd deployment on Kubernetes will make use of an ingress controller. That's a Kubernetes similar to reverse proxy and load balancing functionality. Install the Ingress Nginx controller for Docker Desktop.
 
 ```Bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
 ```
 
+Verify the installation.
+
+```Bash
+kubectl get pods -n ingress-nginx \
+  -l app.kubernetes.io/name=ingress-nginx --watch
+```
+
 ## 1.6. Cert-manager
 
-Cert-manager is used to automatically renew certificates, that will be used to make HTTPS possible. A self-signed certificate is sufficient in your local setup. This is already provided in the form of a Kubernetes secret. You'll only have to install cert-manager as preparation:
+Cert-manager is used to automatically renew certificates, that will be used to make HTTPS possible. A self-signed certificate is sufficient in your local setup. This is already provided in the form of a Kubernetes secret. You'll only have to install cert-manager as preparation.
 
 ```Bash
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 ```
 
-<!-- 
-Create the initial self-signed certificate:
+Verify the installation.
+
+```Bash
+kubectl get pods -n cert-manager --watch
+```
+
+**Manual (optional) certificate creation steps:**
+Create the initial self-signed CA (Certificate Authority) certificate.
+
 ```Bash
 openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=kubernetes.docker.internal" -days 1024 -out ca.crt
 ```
 
-Use the self-signed certificate to create a Kubernetes secret: 
+Use the self-signed certificate to create a Kubernetes secret.
+
 ```Bash
 kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/tls-ca-cert-sec
 ret.yaml
 ```
 
 Source: https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91
-Talks about CA certificate is not a CA on MacOS. -->
+**Note:** Talks about CA certificate is not a CA on MacOS, but is from 2018.
 
 <!-- Ad-hoc certificate without cert-manager:
 Steps to reproduce a broken ad-hoc HTTPS setup after following the getting started repo
@@ -127,7 +142,7 @@ curl --cacert tls.crt https:/kubernetes.docker.internal/setup
 
 For the CTFd container image you need to use a private registry. For local development speed. The objective is to get a secret stored in your Kubernetes cluster.
 
-Create another personal access token in GitLab. This time select the following scopes: **read_registry** and **write_registry**.
+Create another personal access token in GitLab. This time select the following scopes. **read_registry** and **write_registry**.
 
 You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources.
 
@@ -135,7 +150,7 @@ You need to create a persistent Kubernetes secret. This will be used to authenti
 kubectl create namespace ctf-platform
 ```
 
-Use the following command, with your own login credentials to create a Kubernetes secret and output it to Yaml format:
+Use the following command, with your own login credentials to create a Kubernetes secret and output it to Yaml format.
 
 ```bash
 kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform -o yaml > k8s/1-gitlab-pull-secret.yaml
@@ -145,29 +160,35 @@ The command has generated a Yaml manifest for you. Save this and don't share it,
 
 ## 1.7. CTFd Kubernetes deployment
 
-Use te following command to deploy all CTFd components described in the manifest:
+Use te following command to deploy all CTFd components described in the manifest.
 
 ```bash
 kubectl apply -f k8s/
 ```
 
-The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal).
+The output should be.
 
-Seeing results:
+```Bash
+secret/gitlab-pull created
+service/ctfd-service created
+deployment.apps/ctfd created
+issuer.cert-manager.io/ca-issuer created
+certificate.cert-manager.io/kubernetes-docker-internal created
+ingress.networking.k8s.io/ctfd-ingress created
+secret/ca-key-pair created
+```
+
+Seeing results of the application (CTFd) component.
 
 ```bash
 kubectl logs service/ctfd-service -n ctf-platform
 ```
 
+The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal).
+
 You can now finish the setup. The required fields are: **Event Name** > **Admin Username**, **Admin Email** and **Admin Password**.
 
 When you logout of the admin account, you're able to login with an account of a supported school (Hogeschool Utrecht).
-
-If you want to cleanup, the following command can be used.
-
-```bash
-kubectl delete -f k8s/
-```
 
 ## 1.8. Backup & restore
 
@@ -224,13 +245,13 @@ The following command will delete all custom created resources.
 kubectl delete -f k8s/
 ```
 
-Uninstall cert-manager:
+Uninstall cert-manager.
 
 ```Bash
 kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/vX.Y.Z/cert-manager.yaml
 ```
 
-Uninstall the NGINX ingress controller:
+Uninstall the NGINX ingress controller.
 
 ```Bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml

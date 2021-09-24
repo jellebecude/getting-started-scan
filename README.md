@@ -61,7 +61,7 @@ Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes
 
 ## 1.4. Install kubectl
 
-Kubectl is the CLI tool to interact with Kubernetes clusters. The following [link](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) shows installation instructions for Linux, since we're working within our WSL terminal. Windows and MacOS instructions can be found in the menubar.
+Kubectl is the CLI tool to interact with Kubernetes clusters. The following [link](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) shows installation instructions for Linux, since we're working within our WSL terminal. Windows and MacOS instructions can be found in the menubar. Make sure your current directory is your home directory when installing, e.g. `cd ~/`.
 
 Make sure your kube-config file is in the right location, and includes the correct cluster. On Windows it can be found in: `%USERPROFILE%\.kube\config` or (Mac/Linux `~/.kube/config`) .
 For alternative locations you can make it known to kubectl with: e.g. `export KUBECONFIG=Path/kube.config` (Linux/MacOS version).

@@ -113,7 +113,7 @@ openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=kubernetes.docker.i
 Use the self-signed certificate to create a Kubernetes secret.
 
 ```Bash
-kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/tls-ca-cert-secret.yaml
+kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/ca-key-pair-secret.yaml
 ```
 
 Source: <https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91>
@@ -307,7 +307,7 @@ kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v1.
 Uninstall the NGINX ingress controller.
 
 ```Bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
+kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
 ```
 
 If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted.

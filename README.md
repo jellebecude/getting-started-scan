@@ -22,11 +22,11 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
 
 ## 1.1. CTFd local K8s deployment
 
-- **Purpose:** to get started with using the Joint Cyber Range platform.
+- **Purpose:** getting started with using the Joint Cyber Range platform and create a backup to restore.
 
-- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started.
+- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started with.
 
-- **Note:** This documentation continues with Docker Desktop on Windows, while WSL2 will be utilized to run bash commands. The experience on MacOS and Linux should be close because of this.
+- **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
 ## 1.2. GitLab & Visual Studio Code
 
@@ -44,13 +44,13 @@ Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click o
 
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Windows or MacOS.
 
-- **Windows**: Docker Dekstop requires a WSL (recommended) backend, or Hyper-V on older Windows versions. You also need to have hardware virtualization enabled in your BIOS settings. Full instructions can be found [here](https://docs.docker.com/docker-for-windows/install). When installing Docker desktop, make sure on the configuration page **Install required Windows components for WSL 2** or the **Enable Hyper-V Windows Features** option is selected.
+**Windows**: Docker Dekstop requires a WSL (recommended) backend, or Hyper-V on older Windows versions. You also need to have hardware virtualization enabled in your BIOS settings. Full instructions can be found [here](https://docs.docker.com/docker-for-windows/install). When installing Docker desktop, make sure on the configuration page **Install required Windows components for WSL 2** or the **Enable Hyper-V Windows Features** option is selected.
 
-  **Optional:** After the Docker Desktop install you can follow the instructions from [step 5](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice), to install a WSL distribution and enable integration with Docker Desktop. This allows for running Docker commands within a WSL Terminal.
+After Docker Desktop and WSL have been installed, choose a Linux distribution for WSL from the Windows Store (Ubuntu 20.04 is recommended). It's important to set the distribution to use WSL version 2, please follow [these instructions](https://docs.microsoft.com/en-us/windows/wsl/basic-commands#list-install-linux-distributions) for this. Now you can enable its integration with Docker Desktop, as described [here](https://docs.docker.com/desktop/windows/wsl/). This allows for running Docker commands within a WSL Terminal.
 
-- **MacOS**: On MacOS, there seems to be no additional requirements.
+**MacOS**: On MacOS, there seems to be no additional requirements.
 
-- **Linux**: Docker desktop is not supported on Liunx. Use the Docker Engine instead with another local Kubernetes distribution, e.g. K3D, KIND or MiniKube.
+**Linux**: Docker desktop is not supported on Liunx. Use the Docker Engine instead with another local Kubernetes distribution, e.g. K3D, KIND or MiniKube.
 
 Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes** and make sure **Enable Kubernetes** is checked.
 

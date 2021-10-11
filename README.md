@@ -159,7 +159,7 @@ kubectl create namespace ctf-platform
 Use the following command, with your own login credentials to create a Kubernetes secret and output it to Yaml format.
 
 ```bash
-kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform -o yaml > k8s/1-gitlab-pull-secret.yaml
+kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform --dry-run='client' -o yaml > k8s/1-gitlab-pull-secret.yaml
 ```
 
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded.

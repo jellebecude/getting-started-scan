@@ -19,6 +19,7 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
     - [1.7.1. Verification of deployed resources (optional)](#171-verification-of-deployed-resources-optional)
   - [1.8. Backup & restore](#18-backup--restore)
   - [1.9. Clean-up](#19-clean-up)
+  - [1.10. Known Issues](#110-known-issues)
 
 ## 1.1. CTFd local K8s deployment
 
@@ -269,3 +270,20 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/con
 ```
 
 If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted.
+
+## 1.10. Known Issues
+
+**Not connecting to the website**
+
+When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you van use the Get-NetTCPConnection command to see if there are other processes that run on port 443.
+
+Open Powershell and run this command:
+```Powershell
+try {Get-NetTCPConnection -ea stop -LocalPort 443 | select local*,state,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}}} catch {write-output "Port 443 not in use"}
+```
+You now see a list of processes that run on the 443 port.
+If there is more than 1 process that runs on the 443 port there is a possibility that the other processes are hijacking the http request to the CTFd website. 
+
+To resolve this issue you can close the other processes.
+
+VMware workstation is one application that can conflict with the CTFd platform. It has a deprecated feature for sharing VMs that defaults to port 443. To resolve this you can turn the feature off.

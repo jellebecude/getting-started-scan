@@ -275,13 +275,13 @@ If you really want to be sure all resources are deleted or when you run into tro
 
 **Not connecting to the website**
 
-When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you van use the Get-NetTCPConnection command to see if there are other processes that run on port 443.
+When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you can use the `Get-NetTCPConnection` command to see if there are other processes that run on port 443.
 
 Open Powershell and run this command:
 ```Powershell
 try {Get-NetTCPConnection -ea stop -LocalPort 443 | select local*,state,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}}} catch {write-output "Port 443 not in use"}
 ```
-You now see a list of processes that run on the 443 port.
+You now see a list of processes that run on the 443 port or a message showing that port 443 is not in use.
 If there is more than 1 process that runs on the 443 port there is a possibility that the other processes are hijacking the http request to the CTFd website. 
 
 To resolve this issue you can close the other processes.

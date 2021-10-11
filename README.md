@@ -279,7 +279,7 @@ When deploying the CTFd platform locally there is a possibility that there is a 
 
 Open Powershell and run this command:
 ```Powershell
-Get-NetTCPConnection -LocalPort 443 | select local*,state,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}}
+try {Get-NetTCPConnection -ea stop -LocalPort 443 | select local*,state,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}}} catch {write-output "Port 443 not in use"}
 ```
 You now see a list of processes that run on the 443 port.
 If there is more than 1 process that runs on the 443 port there is a possibility that the other processes are hijacking the http request to the CTFd website. 

@@ -18,20 +18,15 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
   - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
     - [1.7.1. Verification of deployed resources (optional)](#171-verification-of-deployed-resources-optional)
   - [1.8. Backup & restore](#18-backup--restore)
-  - [1.9. Challenges](#19-challenges)
-    - [1.9.1. Solve some challenges](#191-solve-some-challenges)
-    - [1.9.2. Make your own CTF challenge](#192-make-your-own-ctf-challenge)
-    - [1.9.3. Instructions container-based challenge](#193-instructions-container-based-challenge)
-    - [1.9.4. Add your challenges to CTFd](#194-add-your-challenges-to-ctfd)
-  - [1.10. Clean-up](#110-clean-up)
+  - [1.9. Clean-up](#19-clean-up)
 
 ## 1.1. CTFd local K8s deployment
 
-- **Purpose:** to get started with using the Joint Cyber Range platform.
+- **Purpose:** getting started with using the Joint Cyber Range platform and create a backup to restore.
 
-- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started.
+- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started with.
 
-- **Note:** This documentation continues with Docker Desktop on Windows, while WSL2 will be utilized to run bash commands. The experience on MacOS and Linux should be close because of this.
+- **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
 ## 1.2. GitLab & Visual Studio Code
 
@@ -49,19 +44,19 @@ Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click o
 
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Windows or MacOS.
 
-- **Windows**: Docker Dekstop requires a WSL (recommended) backend, or Hyper-V on older Windows versions. You also need to have hardware virtualization enabled in your BIOS settings. Full instructions can be found [here](https://docs.docker.com/docker-for-windows/install). When installing Docker desktop, make sure on the configuration page **Install required Windows components for WSL 2** or the **Enable Hyper-V Windows Features** option is selected.
+**Windows**: Docker Dekstop requires a WSL (recommended) backend, or Hyper-V on older Windows versions. You also need to have hardware virtualization enabled in your BIOS settings. Full instructions can be found [here](https://docs.docker.com/docker-for-windows/install). When installing Docker desktop, make sure on the configuration page **Install required Windows components for WSL 2** or the **Enable Hyper-V Windows Features** option is selected.
 
-  **Optional:** After the Docker Desktop install you can follow the instructions from [step 5](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-6---install-your-linux-distribution-of-choice), to install a WSL distribution and enable integration with Docker Desktop. This allows for running Docker commands within a WSL Terminal.
+After Docker Desktop and WSL have been installed, choose a Linux distribution for WSL from the Windows Store (Ubuntu 20.04 is recommended). It's important to set the distribution to use WSL version 2, please follow [these instructions](https://docs.microsoft.com/en-us/windows/wsl/basic-commands#list-install-linux-distributions) for this. Now you can enable its integration with Docker Desktop, as described [here](https://docs.docker.com/desktop/windows/wsl/). This allows for running Docker commands within a WSL Terminal.
 
-- **MacOS**: On MacOS, there seems to be no additional requirements.
+**MacOS**: On MacOS, there seems to be no additional requirements.
 
-- **Linux**: Docker desktop is not supported on Liunx. Use the Docker Engine instead with another local Kubernetes distribution, e.g. K3D, KIND or MiniKube.
+**Linux**: Docker desktop is not supported on Liunx. Use the Docker Engine instead with another local Kubernetes distribution, e.g. K3D, KIND or MiniKube.
 
 Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes** and make sure **Enable Kubernetes** is checked.
 
 ## 1.4. Install kubectl
 
-Kubectl is the CLI tool to interact with Kubernetes clusters. The following [link](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) shows installation instructions for Linux, since we're working within our WSL terminal. Windows and MacOS instructions can be found in the menubar.
+Kubectl is the CLI tool to interact with Kubernetes clusters. The following [link](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) shows installation instructions for Linux, since we're working within our WSL terminal. Windows and MacOS instructions can be found in the menubar. Make sure your current directory is your home directory when installing, e.g. `cd ~/`.
 
 Make sure your kube-config file is in the right location, and includes the correct cluster. On Windows it can be found in: `%USERPROFILE%\.kube\config` or (Mac/Linux `~/.kube/config`) .
 For alternative locations you can make it known to kubectl with: e.g. `export KUBECONFIG=Path/kube.config` (Linux/MacOS version).
@@ -113,7 +108,7 @@ openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=kubernetes.docker.i
 Use the self-signed certificate to create a Kubernetes secret.
 
 ```Bash
-kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/tls-ca-cert-secret.yaml
+kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/ca-key-pair-secret.yaml
 ```
 
 Source: <https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91>
@@ -247,44 +242,7 @@ Admin credentials:
 Username: admin
 Password: jcr
 
-## 1.9. Challenges
-
-CTF challenges basically run down to; IT/CYber Security puzzles, a digital scavenger hunt or escape room. Various types of CTF events exist, while CTFd makes it possible to host Jeopardy Style events.
-Events focussed on professionals or internal training, try to simulate realistic Cyber Security scenarios. Attack/Defense games or Red vs Blue scenarios, is where the Joint Cyber Range will be heading to in the future.
-
-### 1.9.1. Solve some challenges
-
-In the zip file are some basic challenges included, from various CTF categories. Solve these to get a glimpse of how a CTF works.
-
-Username: user
-Password: user
-
-**Note:** I wasn't able to deploy a container based challenge on CTFd. You can pull the image```dockerburthet/ctf-ssh``` and try to solve the challenge.
-**Title:** SSH
-**Description:** Alice makes use of bad password hygiene on her server. Retrieve the content of the hidden message.
-
-### 1.9.2. Make your own CTF challenge
-
-Try to think of a basic CTF challenge that somebody else must be able to solve.
-
-- Design and make a static text or upload based challenge first and save it in CTFd.
-- Move on to creating a container-based challenge.
-
-### 1.9.3. Instructions container-based challenge
-
-**1.** Create a dockerfile for the container(s) you want to include in the challenge. **Note:** All necessary files that it interacts with, must be included in the image.
-
-**2.** Build and try your image. When you're satisfied, upload the container image to a container registry.
-
-**3.** Package it all up as a docker-compose file and test. If it works, you can encode your docker-compose file
-
-**4.** Upload the challenge and test if the deployment and flag input work. Export your static and container-based challenges and share it with somebody to solve.
-
-### 1.9.4. Add your challenges to CTFd
-
-You can login as admin and add your newly made challenges to the catalogue. Export your CTF event and share it, to get your challenges peer reviewed.
-
-## 1.10. Clean-up
+## 1.9. Clean-up
 
 The following command will delete all custom created resources.
 
@@ -307,7 +265,7 @@ kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v1.
 Uninstall the NGINX ingress controller.
 
 ```Bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
+kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
 ```
 
 If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted.

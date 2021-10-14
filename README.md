@@ -20,6 +20,7 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
   - [1.8. Backup & restore](#18-backup--restore)
   - [1.9. Clean-up](#19-clean-up)
   - [1.10. Known Issues](#110-known-issues)
+  - [Next steps](#next-steps)
 
 ## 1.1. CTFd local K8s deployment
 
@@ -287,3 +288,8 @@ If there is more than 1 process that runs on the 443 port there is a possibility
 To resolve this issue you can close the other processes.
 
 VMware workstation is one application that can conflict with the CTFd platform. It has a deprecated feature for sharing VMs that defaults to port 443. To resolve this you can turn the feature off.
+
+## Next steps
+
+- [Create static & container-based challenges](/challenges/README.md)
+- [JCR development & contributing](https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md)

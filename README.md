@@ -12,7 +12,7 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
     - [1.2.1. Gitlab code repository access](#121-gitlab-code-repository-access)
     - [1.2.2. Visual Studio Code](#122-visual-studio-code)
   - [1.3. Install and setup Docker Desktop](#13-install-and-setup-docker-desktop)
-    - [1.3.1. Resetting Docker Desktop / Kubernetes](#131-resetting-docker-desktop--kubernetes)
+    - [1.3.1. Resetting Docker Desktop and Kubernetes](#131-resetting-docker-desktop-and-kubernetes)
   - [1.4. Install kubectl](#14-install-kubectl)
   - [1.5. Ingress NGINX controller](#15-ingress-nginx-controller)
   - [1.6. Cert-manager](#16-cert-manager)
@@ -57,7 +57,7 @@ After Docker Desktop and WSL have been installed, choose a Linux distribution fo
 
 Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes** and make sure **Enable Kubernetes** is checked. 
 
-### 1.3.1. Resetting Docker Desktop / Kubernetes
+### 1.3.1. Resetting Docker Desktop and Kubernetes
 
 You can reset the Kubernetes cluster and delete all created resources by going to **Settings** > **Kubernetes**, then click `Reset Kubernetes Cluster`. All reset functions are also conveniently listed when you click on the `Bug` icon, including `Clean / Purge data` and `Reset to factory defaults`. When you do this because you've ran into a problem and are unable to fix it, sometimes it's required to completely re-install Docker desktop.
 
@@ -285,7 +285,7 @@ Uninstall the NGINX ingress controller.
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
 ```
 
-If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted. Instructions at [1.3.1. Resetting Docker Desktop / Kubernetes](README.md#131-resetting-docker-desktop--kubernetes).
+If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted. Instructions at [1.3.1. Resetting Docker Desktop and Kubernetes](README.md#131-resetting-docker-desktop-and-kubernetes).
 
 ## 1.10. Known Issues
 

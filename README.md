@@ -24,6 +24,7 @@ You could also take matters in your own hands by creating a [new branch](https:/
   - [1.9. Clean-up](#19-clean-up)
   - [1.10. Known Issues](#110-known-issues)
   - [1.10.1. CTFd not accessible due to port conflict](#1101-ctfd-not-accessible-due-to-port-conflict)
+  - [1.10.2. CTFd logs in Docker Desktop](#1102-ctfd-logs-in-docker-desktop)
   - [1.11. Next steps](#111-next-steps)
 
 ## 1.1. CTFd local K8s deployment
@@ -321,7 +322,7 @@ kubectl describe deployments,service,ingress,secret,Issuer,Certificates -n ctf-p
 
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
 
-You can restore a backup by importing the zip file included in this repository, it will load some basic challenges for you. To import the backup, go to **Admin Panel**, then click **Config** in the top menu. You will see **Backup** in the sidebar and click on **Import**. Choose the zip included or one of yourself and click on **Import**.
+You can restore a backup by importing the zip file included in this repository, it will load some basic challenges for you. To import the backup, go to **Admin Panel**, then click **Config** in the top menu. You will see **Backup** in the sidebar and click on **Import**. Choose the zip included or one of yourself and click on **Import**. When uploading seems to get stuck, reload the site by browsing to the homepage. You can login with the credentials stored in the backup of the CTF event.
 
 **Admin credentials:**
 Username: _admin_
@@ -371,6 +372,16 @@ If there is more than 1 process that runs on the 443 port there is a possibility
 To resolve this issue you can close the other processes.
 
 VMware workstation is one application that can conflict with the CTFd platform. It has a deprecated feature for sharing VMs that defaults to port 443. To resolve this you can turn the feature off.
+
+## 1.10.2. CTFd logs in Docker Desktop
+
+CTFd logs can be viewed with the provided command.
+
+```Bash
+kubectl logs service/ctfd-service -n ctf-platform
+```
+
+Docker desktop also provides logs for each container, though the messages may arrive in a different order.
 
 ## 1.11. Next steps
 

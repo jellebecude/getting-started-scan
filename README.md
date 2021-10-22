@@ -12,6 +12,7 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
     - [1.2.1. Gitlab code repository access](#121-gitlab-code-repository-access)
     - [1.2.2. Visual Studio Code](#122-visual-studio-code)
   - [1.3. Install and setup Docker Desktop](#13-install-and-setup-docker-desktop)
+    - [1.3.1. Resetting Docker Desktop / Kubernetes](#131-resetting-docker-desktop--kubernetes)
   - [1.4. Install kubectl](#14-install-kubectl)
   - [1.5. Ingress NGINX controller](#15-ingress-nginx-controller)
   - [1.6. Cert-manager](#16-cert-manager)
@@ -52,9 +53,13 @@ After Docker Desktop and WSL have been installed, choose a Linux distribution fo
 
 **MacOS**: On MacOS, there seems to be no additional requirements.
 
-**Linux**: Docker desktop is not supported on Liunx. Use the Docker Engine instead with another local Kubernetes distribution, e.g. K3D, KIND or MiniKube.
+**Linux**: Docker desktop is not supported on Linux. Use the Docker Engine instead with another local Kubernetes distribution, e.g. K3D, KIND or MiniKube.
 
-Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes** and make sure **Enable Kubernetes** is checked.
+Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes** and make sure **Enable Kubernetes** is checked. 
+
+### 1.3.1. Resetting Docker Desktop / Kubernetes
+
+You can reset the Kubernetes cluster and delete all created resources by going to **Settings** > **Kubernetes**, then click `Reset Kubernetes Cluster`. All reset functions are also conveniently listed when you click on the `Bug` icon, including `Clean / Purge data` and `Reset to factory defaults`. When you do this because you've ran into a problem and are unable to fix it, sometimes it's required to completely re-install Docker desktop.
 
 ## 1.4. Install kubectl
 
@@ -107,7 +112,13 @@ Create a certificate for the relevant DNS name with the newly created CA key.
 openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=kubernetes.docker.internal" -days 1024 -out ca.crt
 ```
 
-Use the self-signed certificate to create a Kubernetes secret.
+Create a Kubernetes namespace for the resources to be created.
+
+```Bash
+kubectl create namespace ctf-platform
+```
+
+Use the self-signed certificate to create a Kubernetes secret. Make sure to change your working directory to the main repository's directory.
 
 ```Bash
 kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/ca-key-pair-secret.yaml
@@ -147,16 +158,20 @@ For the CTFd container image you need to use a private registry. For local devel
 
 Create another personal access token in GitLab. This time select the following scopes. **read_registry** and **write_registry**.
 
-You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources.
+You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources if you haven't yet in the optional step.
 
 ```Bash
 kubectl create namespace ctf-platform
 ```
 
-Use the following command, with your own login credentials to create a Kubernetes secret and output it to Yaml format.
+Adapt the following command to utilize your own login credentials and create a Kubernetes secret that will output to YAML format.
 
 ```bash
-kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com --docker-username={GitLab username} --docker-password={personal access token} --docker-email={email address} -n ctf-platform --dry-run='client' -o yaml > k8s/1-gitlab-pull-secret.yaml
+kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com \
+--docker-username={GitLab username} \
+--docker-password={personal access token} \
+--docker-email={email address} \
+-n ctf-platform --dry-run='client' -o yaml > k8s/1-gitlab-pull-secret.yaml
 ```
 
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded.
@@ -187,11 +202,11 @@ Seeing results of the application (CTFd) component.
 kubectl logs service/ctfd-service -n ctf-platform
 ```
 
-The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal).
+The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal). Provided you have no other services running on port 443. Expect a warning about an invalid certificate. Depending on your browser, you may need to go into incognito mode to proceed. 
 
 You can now finish the setup. The required fields are: **Event Name** > **Admin Username**, **Admin Email** and **Admin Password**.
 
-When you logout of the admin account, you're able to login with an account of a supported school (Hogeschool Utrecht).
+When you logout of the admin account, you're able to login with other accounts. Ones that you manually created as admin or affiliated / supported educational institutions by the SURFconext federated identity. 
 
 ### 1.7.1. Verification of deployed resources (optional)
 
@@ -270,7 +285,7 @@ Uninstall the NGINX ingress controller.
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
 ```
 
-If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted.
+If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted. Instructions at [1.3.1. Resetting Docker Desktop / Kubernetes](README.md#131-resetting-docker-desktop--kubernetes).
 
 ## 1.10. Known Issues
 

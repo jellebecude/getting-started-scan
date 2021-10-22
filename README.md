@@ -4,7 +4,9 @@ CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our c
 
 Clone this repository to get started with the Joint Cyber Range, change to its directory in your terminal and follow along.
 
-**Contributing:** Do you find something that's wrong, got bad spelling, can be better explained, make more efficient use of words, could be extended or you just have general improvements? Please contribute to this and other Joint Cyber Range documentation.
+**Contributing:** Do you find something that's wrong, got bad spelling, can be better explained, make more efficient use of words, could be extended or you just have general improvements? Please contribute to this guide and other Joint Cyber Range documentation. You can make a [new issue](https://gitlab.com/hu-hc/jcr/getting-started/-/issues/new?issue%5Bmilestone_id%5D=) on the GitLab repo.
+
+You could also take matters in your own hands by creating a [new branch](https://gitlab.com/hu-hc/jcr/getting-started/-/branches/new), making your changes, doing a commit and perform a `Pull request` or in GitLab's terms, creating a new [Merge request](https://gitlab.com/hu-hc/jcr/getting-started/-/merge_requests/new). Your changes will be reviewed by a Joint Cyber Range associated developer.
 
 - [1. CTFd local deployment test](#1-ctfd-local-deployment-test)
   - [1.1. CTFd local K8s deployment](#11-ctfd-local-k8s-deployment)
@@ -21,6 +23,7 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
   - [1.8. Backup & restore](#18-backup--restore)
   - [1.9. Clean-up](#19-clean-up)
   - [1.10. Known Issues](#110-known-issues)
+  - [1.10.1. CTFd not accessible due to port conflict](#1101-ctfd-not-accessible-due-to-port-conflict)
   - [1.11. Next steps](#111-next-steps)
 
 ## 1.1. CTFd local K8s deployment
@@ -66,7 +69,7 @@ You can reset the Kubernetes cluster and delete all created resources by going t
 Kubectl is the CLI tool to interact with Kubernetes clusters. The following [link](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) shows installation instructions for Linux, since we're working within our WSL terminal. Windows and MacOS instructions can be found in the menubar. Make sure your current directory is your home directory when installing, e.g. `cd ~/`.
 
 Make sure your kube-config file is in the right location, and includes the correct cluster. On Windows it can be found in: `%USERPROFILE%\.kube\config` or (Mac/Linux `~/.kube/config`) .
-For alternative locations you can make it known to kubectl with: e.g. `export KUBECONFIG=Path/kube.config` (Linux/MacOS version).
+For alternative locations you can make it known to kubectl with: e.g. `export KUBECONFIG=PathTo/kube.config` (Linux/MacOS version).
 
 Test with: `kubectl get nodes`, you'll see your Kubernetes cluster nodes and name show up.
 
@@ -82,8 +85,19 @@ Verify the installation.
 
 ```Bash
 kubectl get pods -n ingress-nginx \
-  -l app.kubernetes.io/name=ingress-nginx --watch
+  -l app.kubernetes.io/name=ingress-nginx
 ```
+
+Expected output:
+```Bash
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-b42k6       0/1     Completed   0          46s
+ingress-nginx-admission-patch-6zpd5        0/1     Completed   1          46s
+ingress-nginx-controller-fd7bb8d66-qltbg   0/1     Running     0          46s
+ingress-nginx-controller-fd7bb8d66-qltbg   1/1     Running     0          50s
+```
+
+**Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
 
 ## 1.6. Cert-manager
 
@@ -96,10 +110,25 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5
 Verify the installation.
 
 ```Bash
-kubectl get pods -n cert-manager --watch
+kubectl get pods -n cert-manager
 ```
 
+Expected output.
+
+```Bash
+NAME                                      READY   STATUS    RESTARTS   AGE
+cert-manager-848f547974-n8xvv             1/1     Running   0          8s
+cert-manager-cainjector-54f4cc6b5-kfbfg   1/1     Running   0          8s
+cert-manager-webhook-7c9588c76-kr89r      0/1     Running   0          8s
+cert-manager-webhook-7c9588c76-kr89r      1/1     Running   0          10s
+```
+
+**Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
+
+
 **Manual (optional) certificate creation steps:**
+A certificate is already provided in the repository, but you can create one yourself, for example when the provided certificate is expired.
+
 Create the initial self-signed CA (Certificate Authority) certificate.
 
 ```Bash
@@ -124,8 +153,8 @@ Use the self-signed certificate to create a Kubernetes secret. Make sure to chan
 kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/ca-key-pair-secret.yaml
 ```
 
-Source: <https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91>
-**Note:** Talks about CA certificate is not a CA on MacOS, but is from 2018.
+<!-- Source: <https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91>
+**Note:** Talks about CA certificate is not a CA on MacOS, but is from 2018. -->
 
 <!-- Ad-hoc certificate without cert-manager:
 Steps to reproduce a broken ad-hoc HTTPS setup after following the getting started repo
@@ -158,7 +187,7 @@ For the CTFd container image you need to use a private registry. For local devel
 
 Create another personal access token in GitLab. This time select the following scopes. **read_registry** and **write_registry**.
 
-You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources if you haven't yet in the optional step.
+You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources if you haven't yet in the optional certificate creation step.
 
 ```Bash
 kubectl create namespace ctf-platform
@@ -168,7 +197,7 @@ Adapt the following command to utilize your own login credentials and create a K
 
 ```bash
 kubectl create --save-config=true secret docker-registry gitlab-pull --docker-server=registry.gitlab.com \
---docker-username={GitLab username} \
+--docker-username={GitLab username or email address} \
 --docker-password={personal access token} \
 --docker-email={email address} \
 -n ctf-platform --dry-run='client' -o yaml > k8s/1-gitlab-pull-secret.yaml
@@ -196,10 +225,49 @@ ingress.networking.k8s.io/ctfd-ingress created
 secret/ca-key-pair created
 ```
 
+See in what state the pod is. With the status `ImagePullBackOff` your provided GitLab credentials in the previously created `gitlab-pull`  secret are insufficient. A second possibility is that the GitLab access permissions on the repository for your account are insufficient.
+
+```Bash
+kubectl get pods -n ctf-platform
+```
+
+The output should be as follows.
+
+```Bash
+NAME                    READY   STATUS    RESTARTS   AGE
+ctfd-78f786956f-wvbkt   1/1     Running   0          7m9s
+```
+
+**Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
+
 Seeing results of the application (CTFd) component.
 
 ```bash
 kubectl logs service/ctfd-service -n ctf-platform
+```
+
+Expected output.
+
+```Bash
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running stamp_revision  -> 75e8ab9a0014
+ * Loaded module, <module 'CTFd.plugins.CTFd-oauth-openid' from '/opt/CTFd/CTFd/plugins/CTFd-oauth-openid/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.challenges' from '/opt/CTFd/CTFd/plugins/challenges/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.challengesuser' from '/opt/CTFd/CTFd/plugins/challengesuser/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.dynamic_challenges' from '/opt/CTFd/CTFd/plugins/dynamic_challenges/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.extra-roles' from '/opt/CTFd/CTFd/plugins/extra-roles/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.flags' from '/opt/CTFd/CTFd/plugins/flags/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.kubernetes' from '/opt/CTFd/CTFd/plugins/kubernetes/__init__.py'>
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+Starting CTFd
+[2021-10-22 14:33:32 +0000] [1] [INFO] Starting gunicorn 20.0.4
+[2021-10-22 14:33:32 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
+[2021-10-22 14:33:32 +0000] [1] [INFO] Using worker: gevent
+[2021-10-22 14:33:32 +0000] [13] [INFO] Booting worker with pid: 13
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 ```
 
 The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal). Provided you have no other services running on port 443. Expect a warning about an invalid certificate. Depending on your browser, you may need to go into incognito mode to proceed. 
@@ -255,9 +323,9 @@ When you have the CTFd platform running and added some challenges or other thing
 
 You can restore a backup by importing the zip file included in this repository, it will load some basic challenges for you. To import the backup, go to **Admin Panel**, then click **Config** in the top menu. You will see **Backup** in the sidebar and click on **Import**. Choose the zip included or one of yourself and click on **Import**.
 
-Admin credentials:
-Username: admin
-Password: jcr
+**Admin credentials:**
+Username: _admin_
+Password: _jcr_
 
 ## 1.9. Clean-up
 
@@ -289,7 +357,7 @@ If you really want to be sure all resources are deleted or when you run into tro
 
 ## 1.10. Known Issues
 
-**Not connecting to the website**
+## 1.10.1. CTFd not accessible due to port conflict
 
 When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you can use the `Get-NetTCPConnection` command to see if there are other processes that run on port 443.
 

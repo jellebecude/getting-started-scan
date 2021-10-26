@@ -1,4 +1,4 @@
-/k8s/1-gitlab-pull-secret.yaml
+/k8s/gitlab-pull-secret.yaml
 tls.crt
 tls.key
 *secret.yaml

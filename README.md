@@ -2,14 +2,17 @@
 
 CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our case is running within Kubernetes. The original project's repository can be found [here](https://github.com/CTFd/CTFd), while [this](https://gitlab.com/hu-hc/jcr/platform/ctf-platform) is the location of the JCR's forked repository.
 
-Clone this repository to get started with the Joint Cyber Range, change to its directory in your terminal and follow along.
+- **Purpose:** getting started with using the Joint Cyber Range platform and create a backup to restore.
+
+- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started with.
+
+- **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
 **Contributing:** Do you find something that's wrong, got bad spelling, can be better explained, make more efficient use of words, could be extended or you just have general improvements? Please contribute to this guide and other Joint Cyber Range documentation. You can make a [new issue](https://gitlab.com/hu-hc/jcr/getting-started/-/issues/new?issue%5Bmilestone_id%5D=) on the GitLab repo.
 
 You could also take matters in your own hands by creating a [new branch](https://gitlab.com/hu-hc/jcr/getting-started/-/branches/new), making your changes, doing a commit and perform a `Pull request` or in GitLab's terms, creating a new [Merge request](https://gitlab.com/hu-hc/jcr/getting-started/-/merge_requests/new). Your changes will be reviewed by a Joint Cyber Range associated developer.
 
 - [1. CTFd local deployment](#1-ctfd-local-deployment)
-  - [1.1. CTFd local K8s deployment](#11-ctfd-local-k8s-deployment)
   - [1.2. GitLab and Visual Studio Code](#12-gitlab-and-visual-studio-code)
     - [1.2.1. Gitlab code repository access](#121-gitlab-code-repository-access)
     - [1.2.2. Visual Studio Code](#122-visual-studio-code)
@@ -27,14 +30,6 @@ You could also take matters in your own hands by creating a [new branch](https:/
   - [1.12. CTFd not accessible due to port conflict](#112-ctfd-not-accessible-due-to-port-conflict)
   - [1.13. CTFd logs in Docker Desktop](#113-ctfd-logs-in-docker-desktop)
   - [1.14. Next steps](#114-next-steps)
-
-## 1.1. CTFd local K8s deployment
-
-- **Purpose:** getting started with using the Joint Cyber Range platform and create a backup to restore.
-
-- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started with.
-
-- **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
 ## 1.2. GitLab and Visual Studio Code
 

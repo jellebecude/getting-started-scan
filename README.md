@@ -118,7 +118,7 @@ kubectl create namespace ctf-platform
 Use the created certificate to create a Kubernetes secret with.
 
 ```
-kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform -o yaml > k8s/tls-cert-secret.yaml
+kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform --dry-run='client' -o yaml  > k8s/tls-cert-secret.yaml
 ```
 
 See the created secret.

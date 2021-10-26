@@ -285,8 +285,8 @@ kubectl describe service -n ctf-platform
 Check the created Kubernetes secrets.
 
 ```Bash
-kubectl get secret ca-key-pair kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
-kubectl describe secret ca-key-pair kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
+kubectl get secret kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
+kubectl describe secret kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
 ```
 
 Check that the ingress resource `HOSTS` is mapped to [kubernetes.docker.internal](http://kubernetes.docker.internal), with `ADDRESS` mapped to [localhost](http://localhost).
@@ -296,17 +296,11 @@ kubectl get ingress -n ctf-platform
 kubectl describe ingress -n ctf-platform
 ```
 
-Check the custom resources related to cert-manager.
-
-```Bash
-kubectl get Issuers,Certificates --all-namespaces
-```
-
 Or see all the results at once.
 
 ```Bash
-kubectl get namespace,deployments,service,ingress,secret,Issuer,Certificates -n ctf-platform
-kubectl describe deployments,service,ingress,secret,Issuer,Certificates -n ctf-platform
+kubectl get namespace,deployments,service,ingress,secret -n ctf-platform
+kubectl describe deployments,service,ingress,secret -n ctf-platform
 ```
 
 ## 1.9. Backup & restore

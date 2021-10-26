@@ -211,8 +211,6 @@ The output should be.
 secret/gitlab-pull created
 service/ctfd-service created
 deployment.apps/ctfd created
-issuer.cert-manager.io/ca-issuer created
-certificate.cert-manager.io/kubernetes-docker-internal created
 ingress.networking.k8s.io/ctfd-ingress created
 secret/ca-key-pair created
 ```

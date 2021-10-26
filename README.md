@@ -46,7 +46,7 @@ You need a personal access token, to authenticate with the code repository using
 
 ### 1.2.2. Visual Studio Code
 
-Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: <https://gitlab.com/hu-hc/jcr/jcr-getting-started>. Login in to GitLab by using your personal access token. When the files are loaded, respond to the notice in the left corner and open the cloned repository.
+Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: <https://gitlab.com/hu-hc/jcr/jcr-getting-started>. Login in to GitLab by using your personal access token. When the files are loaded, respond to the notice in the right corner and open the cloned repository.
 
 ## 1.3. Install and setup Docker Desktop
 

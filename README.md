@@ -1,4 +1,4 @@
-# 1. CTFd local deployment test
+# 1. CTFd local deployment
 
 CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our case is running within Kubernetes. The original project's repository can be found [here](https://github.com/CTFd/CTFd), while [this](https://gitlab.com/hu-hc/jcr/platform/ctf-platform) is the location of the JCR's forked repository.
 
@@ -8,24 +8,25 @@ Clone this repository to get started with the Joint Cyber Range, change to its d
 
 You could also take matters in your own hands by creating a [new branch](https://gitlab.com/hu-hc/jcr/getting-started/-/branches/new), making your changes, doing a commit and perform a `Pull request` or in GitLab's terms, creating a new [Merge request](https://gitlab.com/hu-hc/jcr/getting-started/-/merge_requests/new). Your changes will be reviewed by a Joint Cyber Range associated developer.
 
-- [1. CTFd local deployment test](#1-ctfd-local-deployment-test)
+- [1. CTFd local deployment](#1-ctfd-local-deployment)
   - [1.1. CTFd local K8s deployment](#11-ctfd-local-k8s-deployment)
-  - [1.2. GitLab & Visual Studio Code](#12-gitlab--visual-studio-code)
+  - [1.2. GitLab and Visual Studio Code](#12-gitlab-and-visual-studio-code)
     - [1.2.1. Gitlab code repository access](#121-gitlab-code-repository-access)
     - [1.2.2. Visual Studio Code](#122-visual-studio-code)
   - [1.3. Install and setup Docker Desktop](#13-install-and-setup-docker-desktop)
     - [1.3.1. Resetting Docker Desktop and Kubernetes](#131-resetting-docker-desktop-and-kubernetes)
   - [1.4. Install kubectl](#14-install-kubectl)
   - [1.5. Ingress NGINX controller](#15-ingress-nginx-controller)
-  - [1.6. Cert-manager](#16-cert-manager)
-  - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
-    - [1.7.1. Verification of deployed resources (optional)](#171-verification-of-deployed-resources-optional)
-  - [1.8. Backup & restore](#18-backup--restore)
-  - [1.9. Clean-up](#19-clean-up)
-  - [1.10. Known Issues](#110-known-issues)
-  - [1.10.1. CTFd not accessible due to port conflict](#1101-ctfd-not-accessible-due-to-port-conflict)
-  - [1.10.2. CTFd logs in Docker Desktop](#1102-ctfd-logs-in-docker-desktop)
-  - [1.11. Next steps](#111-next-steps)
+  - [1.6. TLS certificate creation for HTTPS](#16-tls-certificate-creation-for-https)
+  - [1.7. Private container registry setup](#17-private-container-registry-setup)
+  - [1.8. CTFd Kubernetes deployment](#18-ctfd-kubernetes-deployment)
+    - [1.8.1. Verification of deployed resources (optional)](#181-verification-of-deployed-resources-optional)
+  - [1.9. Backup & restore](#19-backup--restore)
+  - [1.10. Clean-up](#110-clean-up)
+  - [1.11. Known Issues](#111-known-issues)
+  - [1.12. CTFd not accessible due to port conflict](#112-ctfd-not-accessible-due-to-port-conflict)
+  - [1.13. CTFd logs in Docker Desktop](#113-ctfd-logs-in-docker-desktop)
+  - [1.14. Next steps](#114-next-steps)
 
 ## 1.1. CTFd local K8s deployment
 
@@ -35,7 +36,7 @@ You could also take matters in your own hands by creating a [new branch](https:/
 
 - **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
-## 1.2. GitLab & Visual Studio Code
+## 1.2. GitLab and Visual Studio Code
 
 The Joint Cyber Range utilizes the GitLab free tier for its code archive and CI pipeline. Whereas, VS Code is our IDE of choice. It is open source and offers a big catalogue of extensions. Git source control is natively integrated, for you to manage version control straight from within the IDE. Download and install it for [your system](https://code.visualstudio.com/download). Next you need to setup access to the code repository in GitLab.
 
@@ -100,6 +101,33 @@ ingress-nginx-controller-fd7bb8d66-qltbg   1/1     Running     0          50s
 
 **Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
 
+## 1.6. TLS certificate creation for HTTPS
+
+Create the required resources for a HTTPS connection, first create the initial TLS certificate.
+
+```
+openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=kubernetes.docker.internal" -days 365
+```
+
+Create a Kubernetes namespace for all the CTFd resources.
+
+```Bash
+kubectl create namespace ctf-platform
+```
+
+Use the created certificate to create a Kubernetes secret with.
+
+```
+kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform -o yaml > k8s/tls-cert-secret.yaml
+```
+
+See the created secret.
+
+```
+kubectl get secret kubernetes-docker-internal-tls -n ctf-platform
+```
+
+<!--
 ## 1.6. Cert-manager
 
 Cert-manager is used to automatically renew certificates, that will be used to make HTTPS possible. A self-signed certificate is sufficient in your local setup. This is already provided in the form of a Kubernetes secret. You'll only have to install cert-manager as preparation.
@@ -125,7 +153,6 @@ cert-manager-webhook-7c9588c76-kr89r      1/1     Running   0          10s
 ```
 
 **Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
-
 
 **Manual (optional) certificate creation steps:**
 A certificate is already provided in the repository, but you can create one yourself, for example when the provided certificate is expired.
@@ -153,34 +180,7 @@ Use the self-signed certificate to create a Kubernetes secret. Make sure to chan
 ```Bash
 kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/ca-key-pair-secret.yaml
 ```
-
-<!-- Source: <https://www.youtube.com/watch?v=JJTJfl-V_UM&list=WL&index=91>
-**Note:** Talks about CA certificate is not a CA on MacOS, but is from 2018. -->
-
-<!-- Ad-hoc certificate without cert-manager:
-Steps to reproduce a broken ad-hoc HTTPS setup after following the getting started repo
-```
-openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=kubernetes.docker.internal" -days 365
-```
-```
-kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform -o yaml > k8s/tls-cert-secret.yaml
-```
-```
-kubectl get secret kubernetes-docker-internal-tls -n ctf-platform
-```
-Add to the ingress resource under spec
-
-```
-tls:
-  - hosts:
-      - kubernetes.docker.internal
-    secretName: kubernetes-docker-internal-tls
-```
-```
-curl -k https:/kubernetes.docker.internal
-curl --cacert tls.crt https:/kubernetes.docker.internal
-curl --cacert tls.crt https:/kubernetes.docker.internal/setup
-``` -->
+-->
 
 ## 1.7. Private container registry setup
 
@@ -188,11 +188,7 @@ For the CTFd container image you need to use a private registry. For local devel
 
 Create another personal access token in GitLab. This time select the following scopes. **read_registry** and **write_registry**.
 
-You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. But first, create a namespace for the application's resources if you haven't yet in the optional certificate creation step.
-
-```Bash
-kubectl create namespace ctf-platform
-```
+You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image.
 
 Adapt the following command to utilize your own login credentials and create a Kubernetes secret that will output to YAML format.
 
@@ -206,7 +202,7 @@ kubectl create --save-config=true secret docker-registry gitlab-pull --docker-se
 
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded.
 
-## 1.7. CTFd Kubernetes deployment
+## 1.8. CTFd Kubernetes deployment
 
 Use te following command to deploy all CTFd components described in the manifest.
 
@@ -277,7 +273,7 @@ You can now finish the setup. The required fields are: **Event Name** > **Admin 
 
 When you logout of the admin account, you're able to login with other accounts. Ones that you manually created as admin or affiliated / supported educational institutions by the SURFconext federated identity. 
 
-### 1.7.1. Verification of deployed resources (optional)
+### 1.8.1. Verification of deployed resources (optional)
 
 Information about the application's deployment can be displayed with.
 
@@ -318,7 +314,7 @@ kubectl get namespace,deployments,service,ingress,secret,Issuer,Certificates -n 
 kubectl describe deployments,service,ingress,secret,Issuer,Certificates -n ctf-platform
 ```
 
-## 1.8. Backup & restore
+## 1.9. Backup & restore
 
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
 
@@ -328,7 +324,7 @@ You can restore a backup by importing the zip file included in this repository, 
 Username: _admin_
 Password: _jcr_
 
-## 1.9. Clean-up
+## 1.10. Clean-up
 
 The following command will delete all custom created resources.
 
@@ -356,9 +352,9 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/con
 
 If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted. Instructions at [1.3.1. Resetting Docker Desktop and Kubernetes](README.md#131-resetting-docker-desktop-and-kubernetes).
 
-## 1.10. Known Issues
+## 1.11. Known Issues
 
-## 1.10.1. CTFd not accessible due to port conflict
+## 1.12. CTFd not accessible due to port conflict
 
 When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you can use the `Get-NetTCPConnection` command to see if there are other processes that run on port 443.
 
@@ -373,7 +369,7 @@ To resolve this issue you can close the other processes.
 
 VMware workstation is one application that can conflict with the CTFd platform. It has a deprecated feature for sharing VMs that defaults to port 443. To resolve this you can turn the feature off.
 
-## 1.10.2. CTFd logs in Docker Desktop
+## 1.13. CTFd logs in Docker Desktop
 
 CTFd logs can be viewed with the provided command.
 
@@ -383,7 +379,7 @@ kubectl logs service/ctfd-service -n ctf-platform
 
 Docker desktop also provides logs for each container, though the messages may arrive in a different order.
 
-## 1.11. Next steps
+## 1.14. Next steps
 
 - [Create static & container-based challenges](/challenges/README.md)
 - [JCR development & contributing](https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md)

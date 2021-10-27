@@ -63,20 +63,6 @@ spec:
         persistentVolumeClaim:
           claimName: ctfd-uploads-claim
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    app: ctfd
-  name: ctfd-uploads-claim
-  namespace: ctf-platform
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
 # apiVersion: cert-manager.io/v1
 # kind: Issuer
 # metadata:

@@ -2,14 +2,17 @@
 
 CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our case is running within Kubernetes. The original project's repository can be found [here](https://github.com/CTFd/CTFd), while [this](https://gitlab.com/hu-hc/jcr/platform/ctf-platform) is the location of the JCR's forked repository.
 
-Clone this repository to get started with the Joint Cyber Range, change to its directory in your terminal and follow along.
+- **Purpose:** getting started with using the Joint Cyber Range platform and create a backup to restore.
+
+- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started with.
+
+- **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
 **Contributing:** Do you find something that's wrong, got bad spelling, can be better explained, make more efficient use of words, could be extended or you just have general improvements? Please contribute to this guide and other Joint Cyber Range documentation. You can make a [new issue](https://gitlab.com/hu-hc/jcr/getting-started/-/issues/new?issue%5Bmilestone_id%5D=) on the GitLab repo.
 
 You could also take matters in your own hands by creating a [new branch](https://gitlab.com/hu-hc/jcr/getting-started/-/branches/new), making your changes, doing a commit and perform a `Pull request` or in GitLab's terms, creating a new [Merge request](https://gitlab.com/hu-hc/jcr/getting-started/-/merge_requests/new). Your changes will be reviewed by a Joint Cyber Range associated developer.
 
 - [1. CTFd local deployment](#1-ctfd-local-deployment)
-  - [1.1. CTFd local K8s deployment](#11-ctfd-local-k8s-deployment)
   - [1.2. GitLab and Visual Studio Code](#12-gitlab-and-visual-studio-code)
     - [1.2.1. Gitlab code repository access](#121-gitlab-code-repository-access)
     - [1.2.2. Visual Studio Code](#122-visual-studio-code)
@@ -28,14 +31,6 @@ You could also take matters in your own hands by creating a [new branch](https:/
   - [1.13. CTFd logs in Docker Desktop](#113-ctfd-logs-in-docker-desktop)
   - [1.14. Next steps](#114-next-steps)
 
-## 1.1. CTFd local K8s deployment
-
-- **Purpose:** getting started with using the Joint Cyber Range platform and create a backup to restore.
-
-- **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started with.
-
-- **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
-
 ## 1.2. GitLab and Visual Studio Code
 
 The Joint Cyber Range utilizes the GitLab free tier for its code archive and CI pipeline. Whereas, VS Code is our IDE of choice. It is open source and offers a big catalogue of extensions. Git source control is natively integrated, for you to manage version control straight from within the IDE. Download and install it for [your system](https://code.visualstudio.com/download). Next you need to setup access to the code repository in GitLab.
@@ -46,7 +41,7 @@ You need a personal access token, to authenticate with the code repository using
 
 ### 1.2.2. Visual Studio Code
 
-Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: <https://gitlab.com/hu-hc/jcr/jcr-getting-started>. Login in to GitLab by using your personal access token. When the files are loaded, respond to the notice in the left corner and open the cloned repository.
+Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: <https://gitlab.com/hu-hc/jcr/jcr-getting-started>. Login in to GitLab by using your personal access token. When the files are loaded, respond to the notice in the right corner and open the cloned repository.
 
 ## 1.3. Install and setup Docker Desktop
 
@@ -118,9 +113,8 @@ kubectl create namespace ctf-platform
 Use the created certificate to create a Kubernetes secret with.
 
 ```
-kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform --dry-run='client' -o yaml  > prep/tls-cert-secret.yaml
+kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform --dry-run='client' -o yaml  > k8s/tls-cert-secret.yaml
 ```
-
 
 See the created secret.
 
@@ -198,27 +192,17 @@ kubectl create --save-config=true secret docker-registry gitlab-pull --docker-se
 --docker-username={GitLab username or email address} \
 --docker-password={personal access token} \
 --docker-email={email address} \
--n ctf-platform --dry-run='client' -o yaml > prep/gitlab-pull-secret.yaml
+-n ctf-platform --dry-run='client' -o yaml > k8s/1-gitlab-pull-secret.yaml
 ```
 
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded.
 
-Deploy the TLS-certificate and pull-secret with
-```
-kubectl apply -f prep/
-```
-
 ## 1.8. CTFd Kubernetes deployment
 
-Use te following command to deploy all CTFd components described in the manifest for a minimal deployment.
+Use te following command to deploy all CTFd components described in the manifest.
 
 ```bash
 kubectl apply -f k8s/
-```
-
-Optionally, you can deploy CTFd with Persistent storage (includes a database and persistent volume).  
-```bash
-kubectl apply -f k8s-wth-persistence/
 ```
 
 The output should be.
@@ -227,8 +211,6 @@ The output should be.
 secret/gitlab-pull created
 service/ctfd-service created
 deployment.apps/ctfd created
-issuer.cert-manager.io/ca-issuer created
-certificate.cert-manager.io/kubernetes-docker-internal created
 ingress.networking.k8s.io/ctfd-ingress created
 secret/ca-key-pair created
 ```
@@ -301,8 +283,8 @@ kubectl describe service -n ctf-platform
 Check the created Kubernetes secrets.
 
 ```Bash
-kubectl get secret ca-key-pair kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
-kubectl describe secret ca-key-pair kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
+kubectl get secret kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
+kubectl describe secret kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
 ```
 
 Check that the ingress resource `HOSTS` is mapped to [kubernetes.docker.internal](http://kubernetes.docker.internal), with `ADDRESS` mapped to [localhost](http://localhost).
@@ -312,17 +294,11 @@ kubectl get ingress -n ctf-platform
 kubectl describe ingress -n ctf-platform
 ```
 
-Check the custom resources related to cert-manager.
-
-```Bash
-kubectl get Issuers,Certificates --all-namespaces
-```
-
 Or see all the results at once.
 
 ```Bash
-kubectl get namespace,deployments,service,ingress,secret,Issuer,Certificates -n ctf-platform
-kubectl describe deployments,service,ingress,secret,Issuer,Certificates -n ctf-platform
+kubectl get namespace,deployments,service,ingress,secret -n ctf-platform
+kubectl describe deployments,service,ingress,secret -n ctf-platform
 ```
 
 ## 1.9. Backup & restore

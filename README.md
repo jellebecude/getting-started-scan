@@ -118,8 +118,9 @@ kubectl create namespace ctf-platform
 Use the created certificate to create a Kubernetes secret with.
 
 ```
-kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform --dry-run='client' -o yaml  > k8s/tls-cert-secret.yaml
+kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform --dry-run='client' -o yaml  > prep/tls-cert-secret.yaml
 ```
+
 
 See the created secret.
 
@@ -197,17 +198,27 @@ kubectl create --save-config=true secret docker-registry gitlab-pull --docker-se
 --docker-username={GitLab username or email address} \
 --docker-password={personal access token} \
 --docker-email={email address} \
--n ctf-platform --dry-run='client' -o yaml > k8s/1-gitlab-pull-secret.yaml
+-n ctf-platform --dry-run='client' -o yaml > prep/gitlab-pull-secret.yaml
 ```
 
 The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded.
 
+Deploy the TLS-certificate and pull-secret with
+```
+kubectl apply -f prep/
+```
+
 ## 1.8. CTFd Kubernetes deployment
 
-Use te following command to deploy all CTFd components described in the manifest.
+Use te following command to deploy all CTFd components described in the manifest for a minimal deployment.
 
 ```bash
 kubectl apply -f k8s/
+```
+
+Optionally, you can deploy CTFd with Persistent storage (includes a database and persistent volume).  
+```bash
+kubectl apply -f k8s-wth-persistence/
 ```
 
 The output should be.

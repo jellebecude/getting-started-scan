@@ -51,10 +51,31 @@ spec:
               value: MyMERqI8QPo7eYVlp6jF
           image: registry.gitlab.com/hu-hc/jcr/platform/ctf-platform/master:latest
           name: ctfd
+          volumeMounts:
+          - mountPath: /var/uploads
+            name: ctfd-uploads
           ports:
             - containerPort: 8000
           resources: {}
       restartPolicy: Always
+      volumes:
+      - name: ctfd-uploads
+        persistentVolumeClaim:
+          claimName: ctfd-uploads-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: ctfd
+  name: ctfd-uploads-claim
+  namespace: ctf-platform
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 # apiVersion: cert-manager.io/v1
 # kind: Issuer

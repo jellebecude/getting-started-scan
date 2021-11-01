@@ -56,7 +56,7 @@ spec:
             - name: SETUP_EVENT_MODE
               value: users
             - name: SETUP_CTFD_ACCOUNT
-              value: 1
+              value: "1"
             - name: SETUP_EVENT_ADMIN
               value: admin@mail.com
           image: registry.gitlab.com/hu-hc/jcr/platform/ctf-platform/master:latest

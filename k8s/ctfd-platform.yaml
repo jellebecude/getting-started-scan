@@ -45,7 +45,7 @@ spec:
               value: /var/uploads
             - name: WORKERS
               value: "1"
-            - name: SURF_CLIENT_META
+            - name: SURF_METADATA
               value: https://connect.test.surfconext.nl/.well-known/openid-configuration
             - name: SURF_CLIENT_ID
               value: ctfd.jointcyberrange.nl
@@ -56,7 +56,7 @@ spec:
             - name: SETUP_EVENT_MODE
               value: users
             - name: SETUP_CTFD_ACCOUNT
-              value: "1"
+              value: "true"
             - name: SETUP_EVENT_ADMIN
               value: admin@mail.com
           image: registry.gitlab.com/hu-hc/jcr/platform/ctf-platform/master:latest

@@ -54,11 +54,11 @@ spec:
             - name: SETUP_EVENT_NAME
               value: getting-started
             - name: SETUP_EVENT_MODE
-              value: users
-            - name: SETUP_CTFD_ACCOUNT
-              value: "true"
+              value: teams
             - name: SETUP_EVENT_ADMIN
               value: admin@mail.com
+            - name: SETUP_ACCOUNT_TYPE
+              value: both
           image: registry.gitlab.com/hu-hc/jcr/platform/ctf-platform/master:latest
           name: ctfd
           ports:

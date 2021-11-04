@@ -49,8 +49,10 @@ spec:
               value: /var/uploads
             - name: WORKERS
               value: "1"
-            - name: SURF_METADATA
+            - name: SURF_META
               value: https://connect.test.surfconext.nl/.well-known/openid-configuration
+            - name: SURF_SCHEME
+              value: https
             - name: SURF_CLIENT_ID
               value: ctfd.jointcyberrange.nl
             - name: SURF_CLIENT_SECRET
@@ -58,7 +60,7 @@ spec:
             - name: SETUP_EVENT_NAME
               value: getting-started
             - name: SETUP_EVENT_MODE
-              value: teams
+              value: users
             - name: SETUP_EVENT_ADMIN
               value: admin@mail.com
             - name: SETUP_ACCOUNT_TYPE

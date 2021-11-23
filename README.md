@@ -20,8 +20,7 @@ You could also take matters in your own hands by creating a [new branch](https:/
     - [1.2.1. Resetting Docker Desktop and Kubernetes](#121-resetting-docker-desktop-and-kubernetes)
   - [1.3. Install kubectl](#13-install-kubectl)
   - [1.4. Ingress NGINX controller](#14-ingress-nginx-controller)
-  - [1.5. TLS certificate creation for HTTPS](#15-tls-certificate-creation-for-https)
-  - [1.6. Kubernetes namespace](#16-kubernetes-namespace)
+  - [1.5. Kubernetes namespace and choice for data persistence](#15-kubernetes-namespace-and-choice-for-data-persistence)
   - [1.6. Private container registry setup](#16-private-container-registry-setup)
   - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
     - [1.7.1. Ephemeral storage](#171-ephemeral-storage)
@@ -45,7 +44,16 @@ The Joint Cyber Range utilizes the GitLab free tier for its code archive and CI 
 
 ### 1.1.1. Gitlab code repository access
 
-You need a personal access token, to authenticate with the code repository using the HTTPS clone mechanism. For the personal access token, in case of GitLab, go to your account and click **Edit Profile**, then go to **Access Tokens**. Here you can type in your token name, an optional expiration date and select scopes. The scopes that need to be selected are **read_repository** and **write_repository**, if these are selected click **Create personal access token**. Save your new access token now, because you won't be able to access it again.
+You need a personal access token, to authenticate with the code repository using the HTTPS clone mechanism. For the personal access token, in case of GitLab, go to [Access Tokens under your GitLab profile preferences](https://gitlab.com/-/profile/personal_access_tokens). Here you can type in your token name, an optional expiration date and select scopes. The scopes that need to be selected are **read_repository** and **write_repository**, if these are selected click **Create personal access token**. Save your new access token now, because you won't be able to access it again.
+
+Besides an Access Token you also need to import a SSH key into GitLab. If you don't already have one to import, create a SSH key pair by accepting the defaults on the command `ssh-keygen` and see the results with `cat`.
+
+```Bash
+ssh-keygen
+cat ~/.ssh/id_rsa.pub
+```
+
+Go the [SSH Keys under GitLab profile preferences](https://gitlab.com/-/profile/keys) and import the public key.
 
 ### 1.1.2. Visual Studio Code
 
@@ -104,76 +112,7 @@ ingress-nginx-controller-fd7bb8d66-qltbg   1/1     Running     0          50s
 
 **Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
 
-## 1.5. TLS certificate creation for HTTPS
-
-Create the required resources for a HTTPS connection, first create the initial TLS certificate.
-
-```
-openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=kubernetes.docker.internal" -days 365
-```
-
-Use the created certificate to create a Kubernetes secret with.
-
-```
-kubectl create --save-config=true secret tls kubernetes-docker-internal-tls --cert=tls.crt --key=tls.key -n ctf-platform --dry-run='client' -o yaml  > prep/tls-cert-secret.yaml
-```
-
-<!--
-## 1.6. Cert-manager
-
-Cert-manager is used to automatically renew certificates, that will be used to make HTTPS possible. A self-signed certificate is sufficient in your local setup. This is already provided in the form of a Kubernetes secret. You'll only have to install cert-manager as preparation.
-
-```Bash
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
-```
-
-Verify the installation.
-
-```Bash
-kubectl get pods -n cert-manager
-```
-
-Expected output.
-
-```Bash
-NAME                                      READY   STATUS    RESTARTS   AGE
-cert-manager-848f547974-n8xvv             1/1     Running   0          8s
-cert-manager-cainjector-54f4cc6b5-kfbfg   1/1     Running   0          8s
-cert-manager-webhook-7c9588c76-kr89r      0/1     Running   0          8s
-cert-manager-webhook-7c9588c76-kr89r      1/1     Running   0          10s
-```
-
-**Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
-
-**Manual (optional) certificate creation steps:**
-A certificate is already provided in the repository, but you can create one yourself, for example when the provided certificate is expired.
-
-Create the initial self-signed CA (Certificate Authority) certificate.
-
-```Bash
-openssl genrsa -out ca.key 2048
-```
-
-Create a certificate for the relevant DNS name with the newly created CA key.
-
-```Bash
-openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=kubernetes.docker.internal" -days 1024 -out ca.crt
-```
-
-Create a Kubernetes namespace for the resources to be created.
-
-```Bash
-kubectl create namespace ctf-platform
-```
-
-Use the self-signed certificate to create a Kubernetes secret. Make sure to change your working directory to the main repository's directory.
-
-```Bash
-kubectl create --save-config=true secret tls ca-key-pair --key=ca.key  --cert=ca.crt -n ctf-platform -o yaml > k8s/ca-key-pair-secret.yaml
-```
--->
-
-## 1.6. Kubernetes namespace
+## 1.5. Kubernetes namespace and choice for data persistence
 
 Before you create any resources, you'll have to create the namespace they will reside in. The app can run with or without data persistence. `dev-minimal` will run the app without persistence, whereas `dev-data` wil run the app with data persistence.
 
@@ -212,7 +151,7 @@ Use the following command to deploy all CTFd components described in the manifes
 kubectl apply -k kustomize/minimal
 ```
 
-The output should be.
+The output should be similar to.
 
 ```Bash
 namespace/dev-minimal configured
@@ -234,16 +173,18 @@ Use the following command to deploy all CTFd components described in the manifes
 kubectl apply -k kustomize/data
 ```
 
-The output should be.
+The output should be similar to.
 
 ```Bash
-service/ctfd-service created
-deployment.apps/ctfd created
-persistentvolumeclaim/ctfd-uploads-claim created
-ingress.networking.k8s.io/ctfd-ingress created
-deployment.apps/mariadb created
-persistentvolumeclaim/mariadb-claim created
-service/mariadb created
+namespace/dev-data configured
+serviceaccount/dev-data-ctfd created
+clusterrole.rbac.authorization.k8s.io/dev-data-ctfd created
+clusterrolebinding.rbac.authorization.k8s.io/dev-data-ctfd-kube created
+configmap/dev-data-configmap-ctfd-h2ht7cd778 created
+secret/dev-data-selfsigned-tls-secret created
+service/dev-data-ctfd created
+deployment.apps/dev-data-ctfd created
+ingress.networking.k8s.io/dev-data-ingress created
 ```
 
 ### 1.7.3. Verify the resources
@@ -251,7 +192,7 @@ service/mariadb created
 See in what state the pod is. With the status `ImagePullBackOff` your provided GitLab credentials in the previously created `gitlab-pull`  secret are insufficient. A second possibility is that the GitLab access permissions on the repository for your account are insufficient.
 
 ```Bash
-kubectl get pods -n ctf-platform
+kubectl get pods -n $NAMESPACE
 ```
 
 The output should be as follows.
@@ -266,7 +207,7 @@ ctfd-78f786956f-wvbkt   1/1     Running   0          7m9s
 Seeing results of the application (CTFd) component.
 
 ```bash
-kubectl logs service/ctfd-service -n ctf-platform
+kubectl logs service/ctfd-service -n $NAMESPACE
 ```
 
 Expected output.
@@ -304,34 +245,34 @@ When you logout of the admin account, you're able to login with other accounts. 
 Information about the application's deployment can be displayed with.
 
 ```Bash
-kubectl describe deployment ctfd -n ctf-platform
+kubectl describe deployment ctfd -n $NAMESPACE
 ```
 
 Service information can be displayed with.
 
 ```Bash
-kubectl describe service -n ctf-platform
+kubectl describe service -n $NAMESPACE
 ```
 
 Check the created Kubernetes secrets.
 
 ```Bash
-kubectl get secret kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
-kubectl describe secret kubernetes-docker-internal-tls gitlab-pull -n ctf-platform
+kubectl get secret kubernetes-docker-internal-tls gitlab-pull -n $NAMESPACE
+kubectl describe secret kubernetes-docker-internal-tls gitlab-pull -n $NAMESPACE
 ```
 
 Check that the ingress resource `HOSTS` is mapped to [kubernetes.docker.internal](http://kubernetes.docker.internal), with `ADDRESS` mapped to [localhost](http://localhost).
 
 ```Bash
-kubectl get ingress -n ctf-platform
-kubectl describe ingress -n ctf-platform
+kubectl get ingress -n $NAMESPACE
+kubectl describe ingress -n $NAMESPACE
 ```
 
 Or see all the results at once.
 
 ```Bash
-kubectl get namespace,deployments,service,ingress,secret -n ctf-platform
-kubectl describe deployments,service,ingress,secret -n ctf-platform
+kubectl get namespace,deployments,service,ingress,secret -n $NAMESPACE
+kubectl describe deployments,service,ingress,secret -n $NAMESPACE
 ```
 
 ## 1.8. Backup & restore

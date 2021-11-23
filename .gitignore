@@ -1,6 +1,6 @@
-prep/1-gitlab-pull-secret.yaml
+prep/gitlab-pull-secret.yaml
 tls.crt
 tls.key
 *secret.yaml
-prep/ca-key-pair-secret.yaml
+ca-key-pair-secret.yaml
 prep/tls-ca-cert-secret.yaml

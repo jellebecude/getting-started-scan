@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ctfd-serviceaccount
+  namespace: ctf-platform
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ctfd-clusterrole
+rules:
+- apiGroups: ["", "apps", "batch", "rbac.authorization.k8s.io"]
+  resources: ["pods", "namespaces", "services", "deployments", "jobs", "roles", "rolebindings", "nodes", "secrets"]
+  verbs: ["get", "list", "create", "update", "patch", "watch", "delete", "deletecollection"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ctfd-clusterrolebinding
+subjects:
+- kind: ServiceAccount
+  name: ctfd-serviceaccount
+  namespace: ctf-platform
+roleRef:
+  kind: ClusterRole
+  name: ctfd-clusterrole
+  apiGroup: rbac.authorization.k8s.io

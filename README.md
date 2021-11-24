@@ -23,8 +23,6 @@ You could also take matters in your own hands by creating a [new branch](https:/
   - [1.5. Kubernetes namespace and choice for data persistence](#15-kubernetes-namespace-and-choice-for-data-persistence)
   - [1.6. Private container registry setup](#16-private-container-registry-setup)
   - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
-    - [1.7.1. Ephemeral storage](#171-ephemeral-storage)
-    - [1.7.2. Persistent storage](#172-persistent-storage)
     - [1.7.3. Verify the resources](#173-verify-the-resources)
     - [1.7.4. Verification of deployed resources (optional)](#174-verification-of-deployed-resources-optional)
   - [1.8. Backup & restore](#18-backup--restore)
@@ -143,12 +141,10 @@ The command has generated a Yaml manifest for you. Save this and don't share it,
 
 ## 1.7. CTFd Kubernetes deployment
 
-### 1.7.1. Ephemeral storage
-
-Use the following command to deploy all CTFd components described in the manifests.
+Use the following command to deploy all CTFd components.
 
 ```bash
-kubectl apply -k kustomize/minimal
+kubectl apply -k kustomize/$NAMESPACE
 ```
 
 The output should be similar to.
@@ -163,28 +159,6 @@ secret/dev-minimal-selfsigned-tls-secret created
 service/dev-minimal-ctfd created
 deployment.apps/dev-minimal-ctfd created
 ingress.networking.k8s.io/dev-minimal-ingress created
-```
-
-### 1.7.2. Persistent storage
-
-Use the following command to deploy all CTFd components described in the manifests. These manifests include Persistent storage for both CTFd uploads and MariaDB data. 
-
-```bash
-kubectl apply -k kustomize/data
-```
-
-The output should be similar to.
-
-```Bash
-namespace/dev-data configured
-serviceaccount/dev-data-ctfd created
-clusterrole.rbac.authorization.k8s.io/dev-data-ctfd created
-clusterrolebinding.rbac.authorization.k8s.io/dev-data-ctfd-kube created
-configmap/dev-data-configmap-ctfd-h2ht7cd778 created
-secret/dev-data-selfsigned-tls-secret created
-service/dev-data-ctfd created
-deployment.apps/dev-data-ctfd created
-ingress.networking.k8s.io/dev-data-ingress created
 ```
 
 ### 1.7.3. Verify the resources

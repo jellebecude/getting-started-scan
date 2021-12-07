@@ -21,7 +21,6 @@ You could also take matters in your own hands by creating a [new branch](https:/
   - [1.3. Install kubectl](#13-install-kubectl)
   - [1.4. Ingress NGINX controller](#14-ingress-nginx-controller)
   - [1.5. Kubernetes namespace and choice for data persistence](#15-kubernetes-namespace-and-choice-for-data-persistence)
-  - [1.6. Private container registry setup](#16-private-container-registry-setup)
   - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
     - [1.7.3. Verify the resources](#173-verify-the-resources)
     - [1.7.4. Verification of deployed resources (optional)](#174-verification-of-deployed-resources-optional)
@@ -118,26 +117,6 @@ Before you create any resources, you'll have to create the namespace they will r
 NAMESPACE=dev-minimal
 kubectl create namespace $NAMESPACE
 ```
-
-## 1.6. Private container registry setup
-
-For the CTFd container image you need to use a private registry. For local development speed. The objective is to get a secret stored in your Kubernetes cluster.
-
-Create another personal access token in GitLab. This time select the following scopes. **read_registry** and **write_registry**.
-
-You need to create a persistent Kubernetes secret. This will be used to authenticate to the private container registry and pull an image. 
-
-Adapt the following command to utilize your own login credentials and create a Kubernetes secret that will output to YAML format.
-
-```bash
-kubectl create secret docker-registry gitlab-pull --docker-server=registry.gitlab.com \
---docker-username={GitLab username or email address} \
---docker-password={personal access token} \
---docker-email={email address} \
--n $NAMESPACE
-```
-
-The command has generated a Yaml manifest for you. Save this and don't share it, since it's only Base64 encoded.
 
 ## 1.7. CTFd Kubernetes deployment
 

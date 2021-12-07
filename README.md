@@ -21,19 +21,19 @@ You could also take matters in your own hands by creating a [new branch](https:/
   - [1.3. Install kubectl](#13-install-kubectl)
   - [1.4. Ingress NGINX controller](#14-ingress-nginx-controller)
   - [1.5. Kubernetes namespace and choice for data persistence](#15-kubernetes-namespace-and-choice-for-data-persistence)
-  - [1.7. CTFd Kubernetes deployment](#17-ctfd-kubernetes-deployment)
-    - [1.7.3. Verify the resources](#173-verify-the-resources)
-    - [1.7.4. Verification of deployed resources (optional)](#174-verification-of-deployed-resources-optional)
-  - [1.8. Backup & restore](#18-backup--restore)
-  - [1.9. Clean-up](#19-clean-up)
-    - [1.9.1. Ephemeral storage](#191-ephemeral-storage)
-    - [1.9.2. Persistent storage](#192-persistent-storage)
-    - [1.9.3. Delete the namespace and Ingress controller](#193-delete-the-namespace-and-ingress-controller)
-  - [1.10. Known Issues](#110-known-issues)
-    - [1.10.1. CTFd not accessible due to port conflict](#1101-ctfd-not-accessible-due-to-port-conflict)
-    - [1.10.2. CTFd logs in Docker Desktop](#1102-ctfd-logs-in-docker-desktop)
-    - [1.10.3. NGINX ingress external IP pending](#1103-nginx-ingress-external-ip-pending)
-  - [1.11. Next steps](#111-next-steps)
+  - [1.6. CTFd Kubernetes deployment](#16-ctfd-kubernetes-deployment)
+    - [1.6.1. Verify the resources](#161-verify-the-resources)
+    - [1.6.2. Verification of deployed resources (optional)](#162-verification-of-deployed-resources-optional)
+  - [1.7. Backup & restore](#17-backup--restore)
+  - [1.8. Clean-up](#18-clean-up)
+    - [1.8.1. Ephemeral storage](#181-ephemeral-storage)
+    - [1.8.2. Persistent storage](#182-persistent-storage)
+    - [1.8.3. Delete the namespace and Ingress controller](#183-delete-the-namespace-and-ingress-controller)
+  - [1.9. Known Issues](#19-known-issues)
+    - [1.9.1. CTFd not accessible due to port conflict](#191-ctfd-not-accessible-due-to-port-conflict)
+    - [1.9.2. CTFd logs in Docker Desktop](#192-ctfd-logs-in-docker-desktop)
+    - [1.9.3. NGINX ingress external IP pending](#193-nginx-ingress-external-ip-pending)
+  - [1.10. Next steps](#110-next-steps)
 
 ## 1.1. GitLab and Visual Studio Code
 
@@ -118,7 +118,7 @@ NAMESPACE=dev-minimal
 kubectl create namespace $NAMESPACE
 ```
 
-## 1.7. CTFd Kubernetes deployment
+## 1.6. CTFd Kubernetes deployment
 
 Use the following command to deploy all CTFd components.
 
@@ -140,7 +140,7 @@ deployment.apps/dev-minimal-ctfd created
 ingress.networking.k8s.io/dev-minimal-ingress created
 ```
 
-### 1.7.3. Verify the resources
+### 1.6.1. Verify the resources
 
 See in what state the pod is. With the status `ImagePullBackOff` your provided GitLab credentials in the previously created `gitlab-pull`  secret are insufficient. A second possibility is that the GitLab access permissions on the repository for your account are insufficient.
 
@@ -193,7 +193,7 @@ You can now finish the setup. The required fields are: **Event Name** > **Admin 
 
 When you logout of the admin account, you're able to login with other accounts. Ones that you manually created as admin or affiliated / supported educational institutions by the SURFconext federated identity. 
 
-### 1.7.4. Verification of deployed resources (optional)
+### 1.6.2. Verification of deployed resources (optional)
 
 Information about the application's deployment can be displayed with.
 
@@ -228,7 +228,7 @@ kubectl get namespace,deployments,service,ingress,secret -n $NAMESPACE
 kubectl describe deployments,service,ingress,secret -n $NAMESPACE
 ```
 
-## 1.8. Backup & restore
+## 1.7. Backup & restore
 
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
 
@@ -238,9 +238,9 @@ You can restore a backup by importing the zip file included in this repository, 
 Username: _admin_
 Password: _jcr_
 
-## 1.9. Clean-up
+## 1.8. Clean-up
 
-### 1.9.1. Ephemeral storage
+### 1.8.1. Ephemeral storage
 
 The following command will delete all custom created resources.
 
@@ -248,7 +248,7 @@ The following command will delete all custom created resources.
 kubectl delete -f k8s/
 ```
 
-### 1.9.2. Persistent storage
+### 1.8.2. Persistent storage
 
 Leave Persistent Volumes and its data. 
 
@@ -262,7 +262,7 @@ Delete all resources, including Persistent Volumes
 kubectl delete -f k8s-with-persistence/ -R
 ```
 
-### 1.9.3. Delete the namespace and Ingress controller
+### 1.8.3. Delete the namespace and Ingress controller
 
 The namespace you've created, will have to be manually deleted.
 
@@ -278,11 +278,11 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/con
 
 If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted. Instructions at [1.3.1. Resetting Docker Desktop and Kubernetes](README.md#131-resetting-docker-desktop-and-kubernetes).
 
-## 1.10. Known Issues
+## 1.9. Known Issues
 
 
 
-### 1.10.1. CTFd not accessible due to port conflict
+### 1.9.1. CTFd not accessible due to port conflict
 
 When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you can use the `Get-NetTCPConnection` command to see if there are other processes that run on port 443.
 
@@ -297,7 +297,7 @@ To resolve this issue you can close the other processes.
 
 VMware workstation is one application that can conflict with the CTFd platform. It has a deprecated feature for sharing VMs that defaults to port 443. To resolve this you can turn the feature off.
 
-### 1.10.2. CTFd logs in Docker Desktop
+### 1.9.2. CTFd logs in Docker Desktop
 
 CTFd logs can be viewed with the provided command.
 
@@ -307,7 +307,7 @@ kubectl logs service/ctfd-service -n ctf-platform
 
 Docker desktop also provides logs for each container, though the messages may arrive in a different order.
 
-### 1.10.3. NGINX ingress external IP pending
+### 1.9.3. NGINX ingress external IP pending
 
 If CTFd is not accessible, check if the Service of the NGINX ingress has an external IP entry for `localhost`. Command to check the status of the Ingress. 
 
@@ -340,7 +340,7 @@ Fix: If it is pending, remove Docker Desktop, remove all the folders listed belo
 %ProgramFiles%\Docker
 ```
 
-## 1.11. Next steps
+## 1.10. Next steps
 
 - [Create static & container-based challenges](/challenges/README.md)
 - [JCR development & contributing](https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md)

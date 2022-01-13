@@ -1,0 +1,847 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+  name: dev-data
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd
+  namespace: dev-data
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd-serviceaccount
+  namespace: dev-data
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd
+rules:
+- apiGroups:
+  - ""
+  - apps
+  - batch
+  - rbac.authorization.k8s.io
+  resources:
+  - pods
+  - namespaces
+  - services
+  - deployments
+  - jobs
+  - roles
+  - rolebindings
+  - nodes
+  - secrets
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - patch
+  - watch
+  - delete
+  - deletecollection
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd-clusterrole
+rules:
+- apiGroups:
+  - ""
+  - apps
+  - batch
+  - rbac.authorization.k8s.io
+  resources:
+  - pods
+  - namespaces
+  - services
+  - deployments
+  - jobs
+  - roles
+  - rolebindings
+  - nodes
+  - secrets
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - patch
+  - watch
+  - delete
+  - deletecollection
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd-clusterrolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dev-data-ctfd-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: dev-data-ctfd-serviceaccount
+  namespace: dev-data
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd-kube
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dev-data-ctfd
+subjects:
+- kind: ServiceAccount
+  name: ctfd
+  namespace: prod-jcr
+---
+apiVersion: v1
+data:
+  ACCESS_LOG: '-'
+  DATABASE_URL: mysql+pymysql://ctfd:ctfd@dev-data-mariadb.dev-data.svc.cluster.local/ctfd
+  ERROR_LOG: '-'
+  LOG_FOLDER: /var/log/CTFd
+  REVERSE_PROXY: "true"
+  SETUP_ACCOUNT_TYPE: both
+  SETUP_EMAIL_ENABLED: "false"
+  SETUP_EVENT_ADMIN: jointcyberrange@hu.nl
+  SETUP_EVENT_MODE: teams
+  SETUP_EVENT_NAME: Getting started
+  UPLOAD_FOLDER: /var/uploads
+  WORKERS: "1"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+  name: dev-data-configmap-ctfd-8t4b47m67g
+  namespace: dev-data
+---
+apiVersion: v1
+data:
+  MARIADB_DATABASE: ctfd
+  MARIADB_PASSWORD: ctfd
+  MARIADB_ROOT_PASSWORD: ctfd
+  MARIADB_USER: ctfd
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+  name: dev-data-configmap-mariadb-f275kg54tc
+  namespace: dev-data
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: |
+    ewogICJhdXRocyI6IHsKICAgICJodHRwczovL3JlZ2lzdHJ5LmdpdGxhYi5jb20iOiB7Ci
+    AgICAgICJ1c2VybmFtZSI6ICJrdXN0b21pemUtcHVsbC1pbWFnZSIsCiAgICAgICJwYXNz
+    d29yZCI6ICJzS3lqUlBWVUpGb2ZHVGpKcEZGbSIsCiAgICAgICJlbWFpbCI6ICIiLAogIC
+    AgICAiYXV0aCI6ICJhM1Z6ZEc5dGFYcGxMWEIxYkd3dGFXMWhaMlU2YzB0NWFsSlFWbFZL
+    Um05bVIxUnFTbkJHUm0wPSIKICAgIH0KICB9Cn0K
+kind: Secret
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-gitlab-pull
+  namespace: dev-data
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  password: Y3RmZA==
+kind: Secret
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: database
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: mariadb-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: ctfd-data-storage
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: backend
+    app.kubernetes.io/version: 10.5.12
+  name: dev-data-mariadb-pass
+  namespace: dev-data
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd
+  namespace: dev-data
+spec:
+  ports:
+  - port: 8000
+  selector:
+    app: ctfd
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app: mariadb
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: database
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: mariadb-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: ctfd-data-storage
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: backend
+    app.kubernetes.io/version: 10.5.12
+  name: dev-data-mariadb
+  namespace: dev-data
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: mariadb
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: database
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: mariadb-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: ctfd-data-storage
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: backend
+    app.kubernetes.io/version: 10.5.12
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app: mariadb
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: database
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: mariadb-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: ctfd-data-storage
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: backend
+    app.kubernetes.io/version: 10.5.12
+  name: dev-data-mariadb-claim
+  namespace: dev-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app: ctfd
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ctfd
+  namespace: dev-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ctfd
+      app.kubernetes.io/business-unit: lectorate-cybersecurity
+      app.kubernetes.io/component: application
+      app.kubernetes.io/created-by: hogeschool-utrecht
+      app.kubernetes.io/environment: development-data
+      app.kubernetes.io/instance: ctfd-tenant
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/name: ctfd
+      app.kubernetes.io/owner: hogeschool-utrecht
+      app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+      app.kubernetes.io/part-of: Joint_Cyber_Range
+      app.kubernetes.io/purpose: app_logic_frontend
+      app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+      app.kubernetes.io/tier: frontend
+      app.kubernetes.io/version: 3.1.1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        a8r.io/bugs: IssueTracker_SOON
+        a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+        a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+        a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+        a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+        a8r.io/incidents: IssueTracker_SOON
+        a8r.io/logs: kubectl logs/Lens
+        a8r.io/owner: JointCyberRange
+        a8r.io/performance: N/A
+        a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+        a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+        a8r.io/support: IssueTracker_SOON
+        a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+        prometheus.io/scrape: "true"
+      labels:
+        app: ctfd
+        app.kubernetes.io/business-unit: lectorate-cybersecurity
+        app.kubernetes.io/component: application
+        app.kubernetes.io/created-by: hogeschool-utrecht
+        app.kubernetes.io/environment: development-data
+        app.kubernetes.io/instance: ctfd-tenant
+        app.kubernetes.io/managed-by: kustomize
+        app.kubernetes.io/name: ctfd
+        app.kubernetes.io/owner: hogeschool-utrecht
+        app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+        app.kubernetes.io/part-of: Joint_Cyber_Range
+        app.kubernetes.io/purpose: app_logic_frontend
+        app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+        app.kubernetes.io/tier: frontend
+        app.kubernetes.io/version: 3.1.1
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: dev-data-configmap-ctfd-8t4b47m67g
+        image: ctfd-tilt:latest
+        name: ctfd
+        ports:
+        - containerPort: 8000
+        resources: {}
+      imagePullSecrets:
+      - name: dev-data-gitlab-pull
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 1001
+        runAsGroup: 1001
+        runAsUser: 1001
+      serviceAccountName: dev-data-ctfd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+  labels:
+    app: mariadb
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: database
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: mariadb-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: ctfd-data-storage
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: backend
+    app.kubernetes.io/version: 10.5.12
+  name: dev-data-mariadb
+  namespace: dev-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+      app.kubernetes.io/business-unit: lectorate-cybersecurity
+      app.kubernetes.io/component: database
+      app.kubernetes.io/created-by: hogeschool-utrecht
+      app.kubernetes.io/environment: development-data
+      app.kubernetes.io/instance: mariadb-tenant
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/name: mariadb
+      app.kubernetes.io/owner: hogeschool-utrecht
+      app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+      app.kubernetes.io/part-of: Joint_Cyber_Range
+      app.kubernetes.io/purpose: ctfd-data-storage
+      app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+      app.kubernetes.io/tier: backend
+      app.kubernetes.io/version: 10.5.12
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        a8r.io/bugs: IssueTracker_SOON
+        a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+        a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+        a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+        a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+        a8r.io/incidents: IssueTracker_SOON
+        a8r.io/logs: kubectl logs/Lens
+        a8r.io/owner: JointCyberRange
+        a8r.io/performance: N/A
+        a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+        a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+        a8r.io/support: IssueTracker_SOON
+        a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+        prometheus.io/scrape: "true"
+      labels:
+        app: mariadb
+        app.kubernetes.io/business-unit: lectorate-cybersecurity
+        app.kubernetes.io/component: database
+        app.kubernetes.io/created-by: hogeschool-utrecht
+        app.kubernetes.io/environment: development-data
+        app.kubernetes.io/instance: mariadb-tenant
+        app.kubernetes.io/managed-by: kustomize
+        app.kubernetes.io/name: mariadb
+        app.kubernetes.io/owner: hogeschool-utrecht
+        app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+        app.kubernetes.io/part-of: Joint_Cyber_Range
+        app.kubernetes.io/purpose: ctfd-data-storage
+        app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+        app.kubernetes.io/tier: backend
+        app.kubernetes.io/version: 10.5.12
+    spec:
+      containers:
+      - args:
+        - mysqld
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_unicode_ci
+        - --wait_timeout=28800
+        - --log-warnings=0
+        envFrom:
+        - configMapRef:
+            name: dev-data-configmap-mariadb-f275kg54tc
+        image: mariadb:10.5.12
+        imagePullPolicy: ""
+        name: mariadb
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mariadb-persistent-storage
+      imagePullSecrets:
+      - name: dev-data-gitlab-pull
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: mariadb-persistent-storage
+        persistentVolumeClaim:
+          claimName: dev-data-mariadb-claim
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    a8r.io/bugs: IssueTracker_SOON
+    a8r.io/chat: https://teams.microsoft.com/l/channel/19%3ad90662cfe69640edafce700c163a7f68%40thread.tacv2/DevOps?groupId=0da215fb-47cc-416b-8415-e8da6ff75f02&tenantId=98932909-9a5a-4d18-ace4-7236b5b5e11d
+    a8r.io/dependencies: CTFd, Redis, MariaDB, Cloud-provider, Kubernetes cluster, GitLab container registry, SURFconext OpenID Connect setup
+    a8r.io/description: Joint Cyber Range, Built on CTFd and customized with plugins providing container challenges and Single-Sign-On
+    a8r.io/documentation: https://gitlab.com/hu-hc/jcr/platform/ctf-platform/-/blob/master/README.md
+    a8r.io/incidents: IssueTracker_SOON
+    a8r.io/logs: kubectl logs/Lens
+    a8r.io/owner: JointCyberRange
+    a8r.io/performance: N/A
+    a8r.io/repository: https://gitlab.com/hu-hc/jcr/platform/ctf-platform
+    a8r.io/runbook: https://gitlab.com/hu-hc/jcr/platform/ctfd-as-a-service
+    a8r.io/support: IssueTracker_SOON
+    a8r.io/uptime: https://status.asm.saas.broadcom.com/67337
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 1024m
+    nginx.org/client-max-body-size: 1024m
+  labels:
+    app.kubernetes.io/business-unit: lectorate-cybersecurity
+    app.kubernetes.io/component: application
+    app.kubernetes.io/created-by: hogeschool-utrecht
+    app.kubernetes.io/environment: development-data
+    app.kubernetes.io/instance: ctfd-tenant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ctfd
+    app.kubernetes.io/owner: hogeschool-utrecht
+    app.kubernetes.io/owner-email: jointcyberrange_hu.nl
+    app.kubernetes.io/part-of: Joint_Cyber_Range
+    app.kubernetes.io/purpose: app_logic_frontend
+    app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
+    app.kubernetes.io/tier: frontend
+    app.kubernetes.io/version: 3.1.1
+  name: dev-data-ingress
+  namespace: dev-data
+spec:
+  rules:
+  - host: kubernetes.docker.internal
+    http:
+      paths:
+      - backend:
+          service:
+            name: dev-data-ctfd
+            port:
+              number: 8000
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - kubernetes.docker.internal
+    secretName: dev-data-selfsigned-tls-secret

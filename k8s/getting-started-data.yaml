@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/owner-email: jointcyberrange_hu.nl
     app.kubernetes.io/part-of: Joint_Cyber_Range
     app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
-  name: dev-data
+  name: jcr-getting-started
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -45,7 +45,7 @@ metadata:
     app.kubernetes.io/tier: frontend
     app.kubernetes.io/version: 3.1.1
   name: dev-data-ctfd
-  namespace: dev-data
+  namespace: jcr-getting-started
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -80,7 +80,7 @@ metadata:
     app.kubernetes.io/tier: frontend
     app.kubernetes.io/version: 3.1.1
   name: dev-data-ctfd-serviceaccount
-  namespace: dev-data
+  namespace: jcr-getting-started
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -240,7 +240,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: dev-data-ctfd-serviceaccount
-  namespace: dev-data
+  namespace: jcr-getting-started
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -291,9 +291,9 @@ data:
   ERROR_LOG: '-'
   LOG_FOLDER: /var/log/CTFd
   REVERSE_PROXY: "true"
-  SETUP_ACCOUNT_TYPE: both
+  SETUP_ACCOUNT_TYPE: ctfd
   SETUP_EMAIL_ENABLED: "false"
-  SETUP_EVENT_ADMIN: jointcyberrange@hu.nl
+  SETUP_EVENT_ADMIN: jointcyberrange@admin.nl
   SETUP_EVENT_MODE: teams
   SETUP_EVENT_NAME: Getting started
   UPLOAD_FOLDER: /var/uploads
@@ -309,8 +309,8 @@ metadata:
     app.kubernetes.io/owner-email: jointcyberrange_hu.nl
     app.kubernetes.io/part-of: Joint_Cyber_Range
     app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
-  name: dev-data-configmap-ctfd-8t4b47m67g
-  namespace: dev-data
+  name: dev-data-configmap-ctfd-874b656c2c
+  namespace: jcr-getting-started
 ---
 apiVersion: v1
 data:
@@ -330,7 +330,7 @@ metadata:
     app.kubernetes.io/part-of: Joint_Cyber_Range
     app.kubernetes.io/repository: gitlab.com_hu-hc_jcr_platform_ctfd-as-a-service
   name: dev-data-configmap-mariadb-f275kg54tc
-  namespace: dev-data
+  namespace: jcr-getting-started
 ---
 apiVersion: v1
 data:
@@ -372,7 +372,7 @@ metadata:
     app.kubernetes.io/tier: frontend
     app.kubernetes.io/version: 3.1.1
   name: dev-data-gitlab-pull
-  namespace: dev-data
+  namespace: jcr-getting-started
 type: kubernetes.io/dockerconfigjson
 ---
 apiVersion: v1
@@ -410,7 +410,7 @@ metadata:
     app.kubernetes.io/tier: backend
     app.kubernetes.io/version: 10.5.12
   name: dev-data-mariadb-pass
-  namespace: dev-data
+  namespace: jcr-getting-started
 type: Opaque
 ---
 apiVersion: v1
@@ -446,7 +446,7 @@ metadata:
     app.kubernetes.io/tier: frontend
     app.kubernetes.io/version: 3.1.1
   name: dev-data-ctfd
-  namespace: dev-data
+  namespace: jcr-getting-started
 spec:
   ports:
   - port: 8000
@@ -502,7 +502,7 @@ metadata:
     app.kubernetes.io/tier: backend
     app.kubernetes.io/version: 10.5.12
   name: dev-data-mariadb
-  namespace: dev-data
+  namespace: jcr-getting-started
 spec:
   ports:
   - port: 3306
@@ -558,7 +558,7 @@ metadata:
     app.kubernetes.io/tier: backend
     app.kubernetes.io/version: 10.5.12
   name: dev-data-mariadb-claim
-  namespace: dev-data
+  namespace: jcr-getting-started
 spec:
   accessModes:
   - ReadWriteOnce
@@ -600,7 +600,7 @@ metadata:
     app.kubernetes.io/tier: frontend
     app.kubernetes.io/version: 3.1.1
   name: dev-data-ctfd
-  namespace: dev-data
+  namespace: jcr-getting-started
 spec:
   replicas: 1
   selector:
@@ -659,8 +659,8 @@ spec:
       containers:
       - envFrom:
         - configMapRef:
-            name: dev-data-configmap-ctfd-8t4b47m67g
-        image: ctfd-tilt:latest
+            name: dev-data-configmap-ctfd-874b656c2c
+        image: registry.gitlab.com/hu-hc/jcr/platform/ctf-platform/development:latest
         name: ctfd
         ports:
         - containerPort: 8000
@@ -708,7 +708,7 @@ metadata:
     app.kubernetes.io/tier: backend
     app.kubernetes.io/version: 10.5.12
   name: dev-data-mariadb
-  namespace: dev-data
+  namespace: jcr-getting-started
 spec:
   replicas: 1
   selector:
@@ -828,7 +828,7 @@ metadata:
     app.kubernetes.io/tier: frontend
     app.kubernetes.io/version: 3.1.1
   name: dev-data-ingress
-  namespace: dev-data
+  namespace: jcr-getting-started
 spec:
   rules:
   - host: kubernetes.docker.internal

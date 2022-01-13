@@ -20,19 +20,18 @@ You could also take matters in your own hands by creating a [new branch](https:/
     - [1.2.1. Resetting Docker Desktop and Kubernetes](#121-resetting-docker-desktop-and-kubernetes)
   - [1.3. Install kubectl](#13-install-kubectl)
   - [1.4. Ingress NGINX controller](#14-ingress-nginx-controller)
-  - [1.5. Kubernetes namespace and choice for data persistence](#15-kubernetes-namespace-and-choice-for-data-persistence)
-  - [1.6. CTFd Kubernetes deployment](#16-ctfd-kubernetes-deployment)
-    - [1.6.1. Verify the resources](#161-verify-the-resources)
-    - [1.6.2. Verification of deployed resources (optional)](#162-verification-of-deployed-resources-optional)
-  - [1.7. Backup & restore](#17-backup--restore)
-  - [1.8. Clean-up](#18-clean-up)
-    - [1.8.1. Ephemeral storage](#181-ephemeral-storage)
-    - [1.8.2. Persistent storage](#182-persistent-storage)
-    - [1.8.3. Delete the namespace and Ingress controller](#183-delete-the-namespace-and-ingress-controller)
-  - [1.9. Known Issues](#19-known-issues)
-    - [1.9.1. CTFd not accessible due to port conflict](#191-ctfd-not-accessible-due-to-port-conflict)
-    - [1.9.2. CTFd logs in Docker Desktop](#192-ctfd-logs-in-docker-desktop)
-    - [1.9.3. NGINX ingress external IP pending](#193-nginx-ingress-external-ip-pending)
+  - [1.5. CTFd Kubernetes deployment](#15-ctfd-kubernetes-deployment)
+    - [1.5.1. Verify the resources](#151-verify-the-resources)
+    - [1.5.2. Verification of deployed resources (optional)](#152-verification-of-deployed-resources-optional)
+  - [1.6. Backup & restore](#16-backup--restore)
+  - [1.7. Clean-up](#17-clean-up)
+    - [1.7.1. Ephemeral storage](#171-ephemeral-storage)
+    - [1.7.2. Delete the namespace and Ingress controller](#172-delete-the-namespace-and-ingress-controller)
+  - [1.8. Known Issues](#18-known-issues)
+    - [1.8.1. CTFd not accessible due to port conflict](#181-ctfd-not-accessible-due-to-port-conflict)
+    - [1.8.2. CTFd logs in Docker Desktop](#182-ctfd-logs-in-docker-desktop)
+    - [1.8.3. NGINX ingress external IP pending](#183-nginx-ingress-external-ip-pending)
+  - [1.9. Namespace stuck in termination.](#19-namespace-stuck-in-termination)
   - [1.10. Next steps](#110-next-steps)
 
 ## 1.1. GitLab and Visual Studio Code
@@ -103,27 +102,23 @@ Expected output:
 NAME                                       READY   STATUS      RESTARTS   AGE
 ingress-nginx-admission-create-b42k6       0/1     Completed   0          46s
 ingress-nginx-admission-patch-6zpd5        0/1     Completed   1          46s
-ingress-nginx-controller-fd7bb8d66-qltbg   0/1     Running     0          46s
 ingress-nginx-controller-fd7bb8d66-qltbg   1/1     Running     0          50s
 ```
 
 **Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
 
-## 1.5. Kubernetes namespace and choice for data persistence
-
-Before you create any resources, you'll have to create the namespace they will reside in. The app can run with or without data persistence. `dev-minimal` will run the app without persistence, whereas `dev-data` wil run the app with data persistence.
-
-```Bash
-NAMESPACE=dev-minimal
-kubectl create namespace $NAMESPACE
-```
-
-## 1.6. CTFd Kubernetes deployment
+## 1.5. CTFd Kubernetes deployment
 
 Use the following command to deploy all CTFd components.
 
 ```bash
-kubectl apply -k kustomize/$NAMESPACE
+kubectl apply -f k8s/getting-started-minimal.yaml
+```
+
+or for deployment with persistent database.
+
+```bash
+kubectl apply -f k8s/getting-started-data.yaml
 ```
 
 The output should be similar to.
@@ -140,12 +135,12 @@ deployment.apps/dev-minimal-ctfd created
 ingress.networking.k8s.io/dev-minimal-ingress created
 ```
 
-### 1.6.1. Verify the resources
+### 1.5.1. Verify the resources
 
-See in what state the pod is. With the status `ImagePullBackOff` your provided GitLab credentials in the previously created `gitlab-pull`  secret are insufficient. A second possibility is that the GitLab access permissions on the repository for your account are insufficient.
+See in what state the pod is.
 
 ```Bash
-kubectl get pods -n $NAMESPACE
+kubectl get pods -n jcr-getting-started
 ```
 
 The output should be as follows.
@@ -155,12 +150,18 @@ NAME                    READY   STATUS    RESTARTS   AGE
 ctfd-78f786956f-wvbkt   1/1     Running   0          7m9s
 ```
 
-**Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
+**Tip:** you can continuously watch the resource by adding the `--watch` paramater to the end of the command. 
 
 Seeing results of the application (CTFd) component.
 
-```bash
-kubectl logs service/ctfd-service -n $NAMESPACE
+```Bash
+kubectl logs service/ctfd-service -n jcr-getting-started
+```
+
+Lookup logs per pod. Copy the podname when listing them using `kubectl get pods -A`.
+
+```Bash
+kubectl logs <PODNAME> -n jcr-getting-started
 ```
 
 Expected output.
@@ -189,86 +190,54 @@ INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 
 The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal). Provided you have no other services running on port 443. Expect a warning about an invalid certificate. Depending on your browser, you may need to go into incognito mode to proceed. 
 
-You can now finish the setup. The required fields are: **Event Name** > **Admin Username**, **Admin Email** and **Admin Password**.
+Register the first user that will act as admin of the CTF event. Use the email adres `jointcyberrange@admin.nl`, other email addresses won't register the account as admin since it is pre-configured.
 
-When you logout of the admin account, you're able to login with other accounts. Ones that you manually created as admin or affiliated / supported educational institutions by the SURFconext federated identity. 
+When you logout of the admin account, you're able to register other accounts and login as player.
 
-### 1.6.2. Verification of deployed resources (optional)
+### 1.5.2. Verification of deployed resources (optional)
 
 Information about the application's deployment can be displayed with.
 
 ```Bash
-kubectl describe deployment ctfd -n $NAMESPACE
+kubectl describe deployments -n jcr-getting-started
 ```
 
 Service information can be displayed with.
 
 ```Bash
-kubectl describe service -n $NAMESPACE
-```
-
-Check the created Kubernetes secrets.
-
-```Bash
-kubectl get secret kubernetes-docker-internal-tls gitlab-pull -n $NAMESPACE
-kubectl describe secret kubernetes-docker-internal-tls gitlab-pull -n $NAMESPACE
+kubectl describe service -n jcr-getting-started
 ```
 
 Check that the ingress resource `HOSTS` is mapped to [kubernetes.docker.internal](http://kubernetes.docker.internal), with `ADDRESS` mapped to [localhost](http://localhost).
 
 ```Bash
-kubectl get ingress -n $NAMESPACE
-kubectl describe ingress -n $NAMESPACE
+kubectl get ingress -n jcr-getting-started
+kubectl describe ingress -n jcr-getting-started
 ```
 
 Or see all the results at once.
 
 ```Bash
-kubectl get namespace,deployments,service,ingress,secret -n $NAMESPACE
-kubectl describe deployments,service,ingress,secret -n $NAMESPACE
+kubectl get namespace,deployments,service,ingress,secret -n jcr-getting-started
+kubectl describe deployments,service,ingress,secret -n jcr-getting-started
 ```
 
-## 1.7. Backup & restore
+## 1.6. Backup & restore
 
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
 
 You can restore a backup by importing the zip file included in this repository, it will load some basic challenges for you. To import the backup, go to **Admin Panel**, then click **Config** in the top menu. You will see **Backup** in the sidebar and click on **Import**. Choose the zip included or one of yourself and click on **Import**. When uploading seems to get stuck, reload the site by browsing to the homepage. You can login with the credentials stored in the backup of the CTF event.
 
-**Admin credentials:**
-Username: _admin_
-Password: _jcr_
+## 1.7. Clean-up
 
-## 1.8. Clean-up
+### 1.7.1. Ephemeral storage
 
-### 1.8.1. Ephemeral storage
-
-The following command will delete all custom created resources.
+The following command will delete all resources related to CTFd. Make sure to make a CTFd backup if data needs persistence after deletion.
 
 ```Bash
 kubectl delete -f k8s/
 ```
-
-### 1.8.2. Persistent storage
-
-Leave Persistent Volumes and its data. 
-
-```Bash
-kubectl delete -f k8s-with-persistence/
-```
-
-Delete all resources, including Persistent Volumes 
-
-```Bash
-kubectl delete -f k8s-with-persistence/ -R
-```
-
-### 1.8.3. Delete the namespace and Ingress controller
-
-The namespace you've created, will have to be manually deleted.
-
-```Bash
-kubectl delete namespace ctf-platform
-```
+### 1.7.2. Delete the namespace and Ingress controller
 
 Uninstall the NGINX ingress controller.
 
@@ -278,11 +247,9 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/con
 
 If you really want to be sure all resources are deleted or when you run into trouble, then the cluster can always be resetted. Instructions at [1.3.1. Resetting Docker Desktop and Kubernetes](README.md#131-resetting-docker-desktop-and-kubernetes).
 
-## 1.9. Known Issues
+## 1.8. Known Issues
 
-
-
-### 1.9.1. CTFd not accessible due to port conflict
+### 1.8.1. CTFd not accessible due to port conflict
 
 When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you can use the `Get-NetTCPConnection` command to see if there are other processes that run on port 443.
 
@@ -297,17 +264,17 @@ To resolve this issue you can close the other processes.
 
 VMware workstation is one application that can conflict with the CTFd platform. It has a deprecated feature for sharing VMs that defaults to port 443. To resolve this you can turn the feature off.
 
-### 1.9.2. CTFd logs in Docker Desktop
+### 1.8.2. CTFd logs in Docker Desktop
 
 CTFd logs can be viewed with the provided command.
 
 ```Bash
-kubectl logs service/ctfd-service -n ctf-platform
+kubectl logs service/ctfd-service -n jcr-getting-started
 ```
 
 Docker desktop also provides logs for each container, though the messages may arrive in a different order.
 
-### 1.9.3. NGINX ingress external IP pending
+### 1.8.3. NGINX ingress external IP pending
 
 If CTFd is not accessible, check if the Service of the NGINX ingress has an external IP entry for `localhost`. Command to check the status of the Ingress. 
 
@@ -338,6 +305,22 @@ Fix: If it is pending, remove Docker Desktop, remove all the folders listed belo
 %USERPROFILE%\AppData\Roaming\Docker
 %ProgramData%\Docker
 %ProgramFiles%\Docker
+```
+
+## 1.9. Namespace stuck in termination.
+
+When a namespace is stuck in termination you can resolve it with the following oneliner. It will ask you to enter the name of the corresponding namespace you want to delete.
+
+```Bash
+echo 'namespace to delete: ' && read && kubectl get namespace ${REPLY} -o json | jq '.spec = {"finalizers":[]}' | kubectl replace --raw "/api/v1/namespaces/${REPLY}/finalize" -f -
+```
+
+Finalizers are a protection for related resources within a namepace. The oneliner will empty the finalizers array. This oneliner however requires jq to be installed.
+
+You can install jq with:
+
+```Bash
+sudo apt-get install jq
 ```
 
 ## 1.10. Next steps

@@ -290,9 +290,9 @@ data:
   ERROR_LOG: '-'
   LOG_FOLDER: /var/log/CTFd
   REVERSE_PROXY: "true"
-  SETUP_ACCOUNT_TYPE: both
+  SETUP_ACCOUNT_TYPE: ctfd
   SETUP_EMAIL_ENABLED: "false"
-  SETUP_EVENT_ADMIN: jointcyberrange@hu.nl
+  SETUP_EVENT_ADMIN: jointcyberrange@admin.nl
   SETUP_EVENT_MODE: teams
   SETUP_EVENT_NAME: Getting started
   UPLOAD_FOLDER: /var/uploads

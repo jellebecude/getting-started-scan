@@ -109,19 +109,19 @@ ingress-nginx-controller-fd7bb8d66-qltbg   1/1     Running     0          50s
 
 ## 1.5. CTFd Kubernetes deployment
 
-Use the following command to deploy all CTFd components.
+Use the following command to deploy all CTFd components:
 
 ```bash
 kubectl apply -f k8s/getting-started-minimal.yaml
 ```
 
-or for deployment with persistent database.
+For deployment with persistent database:
 
 ```bash
 kubectl apply -f k8s/getting-started-data.yaml
 ```
 
-The output should be similar to.
+The output should be similar to:
 
 ```Bash
 namespace/dev-minimal configured
@@ -134,6 +134,8 @@ service/dev-minimal-ctfd created
 deployment.apps/dev-minimal-ctfd created
 ingress.networking.k8s.io/dev-minimal-ingress created
 ```
+
+**NOTE**: if you get an error, wait for a bit and try again.
 
 ### 1.5.1. Verify the resources
 

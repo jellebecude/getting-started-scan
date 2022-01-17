@@ -230,9 +230,9 @@ kubectl describe deployments,service,ingress,secret -n jcr-getting-started
 
 ## 1.6. Backup and restore
 
-When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
+When you have the CTFd platform running and added some challenges, users, pages etc. Your're able to backup your CTF event to a zip file and restore it later if necessary. Go to **Admin Panel** > **Config** > **Backup** > **Export** and click the yellow **Export** button.
 
-You can restore a backup by importing the zip file included in this repository, it will load some basic challenges for you. To import the backup, go to **Admin Panel**, then click **Config** in the top menu. You will see **Backup** in the sidebar and click on **Import**. Choose the zip included or one of yourself and click on **Import**. When uploading seems to get stuck, reload the site by browsing to the homepage. You can login with the credentials stored in the backup of the CTF event.
+You can restore a backup by importing the zip file included in this repository, it will load some basic challenges for you. To import the backup, go to **Admin Panel** > **Config** > **Backup** > **Import**. Choose the zip included from this repository or one of yourself and click on **Import**. When uploading seems to get stuck, reload the site by browsing to the homepage. You can login with the credentials stored in the backup of the CTF event.
 
 ## 1.7. Clean-up
 

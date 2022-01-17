@@ -23,7 +23,7 @@ You could also take matters in your own hands by creating a [new branch](https:/
   - [1.5. CTFd Kubernetes deployment](#15-ctfd-kubernetes-deployment)
     - [1.5.1. Verify the resources](#151-verify-the-resources)
     - [1.5.2. Verification of deployed resources (optional)](#152-verification-of-deployed-resources-optional)
-  - [1.6. Backup & restore](#16-backup--restore)
+  - [1.6. Backup and restore](#16-backup-and-restore)
   - [1.7. Clean-up](#17-clean-up)
     - [1.7.1. Ephemeral storage](#171-ephemeral-storage)
     - [1.7.2. Delete the namespace and Ingress controller](#172-delete-the-namespace-and-ingress-controller)
@@ -109,19 +109,19 @@ ingress-nginx-controller-fd7bb8d66-qltbg   1/1     Running     0          50s
 
 ## 1.5. CTFd Kubernetes deployment
 
-Use the following command to deploy all CTFd components:
+Use the following command to deploy all CTFd components.
 
 ```bash
 kubectl apply -f k8s/getting-started-minimal.yaml
 ```
 
-For deployment with persistent database:
+or for deployment with persistent database.
 
 ```bash
 kubectl apply -f k8s/getting-started-data.yaml
 ```
 
-The output should be similar to:
+The output should be similar to.
 
 ```Bash
 namespace/dev-minimal configured
@@ -192,7 +192,7 @@ INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 
 The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal). Provided you have no other services running on port 443. Expect a warning about an invalid certificate. Depending on your browser, you may need to go into incognito mode to proceed. 
 
-Register the first user that will act as admin of the CTF event. Use the email adres `jointcyberrange@admin.nl`, other email addresses won't register the account as admin since it is pre-configured.
+Register the first user that will act as admin of the CTF event. Use the email adres `jointcyberrange@admin.nl`, other email addresses won't register the account as admin since it is pre-configured. 
 
 When you logout of the admin account, you're able to register other accounts and login as player.
 
@@ -224,7 +224,7 @@ kubectl get namespace,deployments,service,ingress,secret -n jcr-getting-started
 kubectl describe deployments,service,ingress,secret -n jcr-getting-started
 ```
 
-## 1.6. Backup & restore
+## 1.6. Backup and restore
 
 When you have the CTFd platform running and added some challenges or other things. Your're able to backup your CTF event to a zip file and restore it later if necessary.
 

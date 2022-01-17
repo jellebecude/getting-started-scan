@@ -135,7 +135,11 @@ deployment.apps/dev-minimal-ctfd created
 ingress.networking.k8s.io/dev-minimal-ingress created
 ```
 
-**NOTE**: if you get an error, wait for a bit and try again.
+**NOTE**: if you get an error similar to the following, wait for a bit and try again.
+
+```
+Error from server (InternalError): error when creating "STDIN": Internal error occurred: failed calling webhook "validate.nginx.ingress.kubernetes.io": Post https://ingress-nginx-controller-admission.ingress-nginx.svc:443/extensions/v1beta1/ingresses?timeout=30s: service "ingress-nginx-controller-admission" not found
+```
 
 ### 1.5.1. Verify the resources
 

@@ -9,6 +9,7 @@ CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our c
 - **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
 **Contributing:** Do you find something that's wrong, got bad spelling, can be better explained, make more efficient use of words, could be extended or you just have general improvements? Please contribute to this guide and other Joint Cyber Range documentation. You can make a [new issue](https://gitlab.com/hu-hc/jcr/getting-started/-/issues/new?issue%5Bmilestone_id%5D=) on the GitLab repo.
+We also welcome and review pull/merge requests, if properly documented.
 
 You could also take matters in your own hands by creating a [new branch](https://gitlab.com/hu-hc/jcr/getting-started/-/branches/new), making your changes, doing a commit and perform a `Pull request` or in GitLab's terms, creating a new [Merge request](https://gitlab.com/hu-hc/jcr/getting-started/-/merge_requests/new). Your changes will be reviewed by a Joint Cyber Range associated developer.
 

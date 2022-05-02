@@ -2,6 +2,8 @@
 
 CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our case is running within Kubernetes. The original project's repository can be found [here](https://github.com/CTFd/CTFd), while [this](https://gitlab.com/hu-hc/jcr/platform/ctf-platform) is the location of the JCR's forked repository.
 
+For more information see also [our docs wiki](https://docs.jointcyberrange.nl).
+
 - **Purpose:** getting started with using the Joint Cyber Range platform and create a backup to restore.
 
 - **Preliminaries:** a Kubernetes environment for deployment, **Docker Desktop** is the easiest one to get started with.
@@ -81,7 +83,7 @@ Kubectl is the CLI tool to interact with Kubernetes clusters. The following [lin
 Make sure your kube-config file is in the right location, and includes the correct cluster. On Windows it can be found in: `%USERPROFILE%\.kube\config` or (Mac/Linux `~/.kube/config`) .
 For alternative locations you can make it known to kubectl with: e.g. `export KUBECONFIG=PathTo/kube.config` (Linux/MacOS version).
 
-Test with: `kubectl get nodes`, you'll see your Kubernetes cluster nodes and name show up.
+Test with: `kubectl get nodes`, you'll see your Kubernetes cluster nodes and name show up. You probably want this to be ```docker-desktop```.
 
 ## 1.4. Ingress NGINX controller
 
@@ -123,6 +125,8 @@ or for deployment with persistent database.
 kubectl apply -f k8s/getting-started-data.yaml
 ```
 
+(The use case for this needs a bit more explanation. Using this allows you to save the database while deleting the container and its image.)
+
 The output should be similar to.
 
 ```Bash
@@ -151,7 +155,7 @@ See in what state the pod is.
 kubectl get pods -n jcr-getting-started
 ```
 
-The output should be as follows.
+The output should be similar to the following. The container name depends on your choice earlier.
 
 ```Bash
 NAME                    READY   STATUS    RESTARTS   AGE
@@ -160,10 +164,10 @@ ctfd-78f786956f-wvbkt   1/1     Running   0          7m9s
 
 **Tip:** you can continuously watch the resource by adding the `--watch` paramater to the end of the command.
 
-Seeing results of the application (CTFd) component.
+Seeing results of the application (CTFd) component. Again, your container name may differ.
 
 ```Bash
-kubectl logs service/ctfd-service -n jcr-getting-started
+kubectl logs service/dev-minimal-ctfd -n jcr-getting-started
 ```
 
 Lookup logs per pod. Copy the podname when listing them using `kubectl get pods -A`.

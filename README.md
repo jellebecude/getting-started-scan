@@ -8,10 +8,10 @@ CTFd is the Capture The Flag platform used by the Joint Cyber Range and in our c
 
 - **Note:** Most tools used are supported on Windows, MacOS and Linux, although this documentation continues using Docker Desktop on Windows, with  WSL2 as backend. Because of WSL and running Bash on Windows, the experience should be close on MacOS and Linux. The WSL distribution for Ubuntu 20.04 will be our Linux user environment and can be downloaded from the Microsoft Store.
 
-**Contributing:** Do you find something that's wrong, got bad spelling, can be better explained, make more efficient use of words, could be extended or you just have general improvements? Please contribute to this guide and other Joint Cyber Range documentation. You can make a [new issue](https://gitlab.com/hu-hc/jcr/getting-started/-/issues/new?issue%5Bmilestone_id%5D=) on the GitLab repo.
+**Contributing:** Do you find something that's wrong, got bad spelling, can be better explained, make more efficient use of words, could be extended or you just have general improvements? Please contribute to this guide and other Joint Cyber Range documentation. You can make a [new issue](https://gitlab.com/jointcyberrange.nl/getting-started/-/issues/new?issue%5Bmilestone_id%5D=) on the GitLab repo.
 We also welcome and review pull/merge requests, if properly documented.
 
-You could also take matters in your own hands by creating a [new branch](https://gitlab.com/hu-hc/jcr/getting-started/-/branches/new), making your changes, doing a commit and perform a `Pull request` or in GitLab's terms, creating a new [Merge request](https://gitlab.com/hu-hc/jcr/getting-started/-/merge_requests/new). Your changes will be reviewed by a Joint Cyber Range associated developer.
+You could also take matters in your own hands by creating a [new branch](https://gitlab.com/jointcyberrange.nl/getting-started/-/branches/new), making your changes, doing a commit and perform a `Pull request` or in GitLab's terms, creating a new [Merge request](https://gitlab.com/jointcyberrange.nl/getting-started/-/merge_requests/new). Your changes will be reviewed by a Joint Cyber Range associated developer.
 
 - [1. CTFd local deployment](#1-ctfd-local-deployment)
   - [1.1. GitLab and Visual Studio Code](#11-gitlab-and-visual-studio-code)
@@ -54,7 +54,7 @@ Go the [SSH Keys under GitLab profile preferences](https://gitlab.com/-/profile/
 
 ### 1.1.2. Visual Studio Code
 
-Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: <https://gitlab.com/hu-hc/jcr/jcr-getting-started>. Login in to GitLab by using your personal access token. When the files are loaded, respond to the notice in the right corner and open the cloned repository.
+Open a new (empty) VS Code Window and go to the Explorer (Ctrl+Shift+E). Click on Clone Respository and enter the repository’s URL: <https://gitlab.com/jointcyberrange.nl/jcr-getting-started>. Login in to GitLab by using your personal access token. When the files are loaded, respond to the notice in the right corner and open the cloned repository.
 
 ## 1.2. Install and setup Docker Desktop
 
@@ -68,7 +68,7 @@ After Docker Desktop and WSL have been installed, choose a Linux distribution fo
 
 **Linux**: Docker desktop is not supported on Linux. Use the Docker Engine instead with another local Kubernetes distribution, e.g. K3D, KIND or MiniKube.
 
-Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes** and make sure **Enable Kubernetes** is checked. 
+Next, enable Kubernetes. Start Docker Desktop, go to **Settings** > **Kubernetes** and make sure **Enable Kubernetes** is checked.
 
 ### 1.2.1. Resetting Docker Desktop and Kubernetes
 
@@ -99,6 +99,7 @@ kubectl get pods -n ingress-nginx \
 ```
 
 Expected output:
+
 ```Bash
 NAME                                       READY   STATUS      RESTARTS   AGE
 ingress-nginx-admission-create-b42k6       0/1     Completed   0          46s
@@ -106,7 +107,7 @@ ingress-nginx-admission-patch-6zpd5        0/1     Completed   1          46s
 ingress-nginx-controller-fd7bb8d66-qltbg   1/1     Running     0          50s
 ```
 
-**Tip:** you can continuously watch the resource by adding the `--watch` paramater. 
+**Tip:** you can continuously watch the resource by adding the `--watch` paramater.
 
 ## 1.5. CTFd Kubernetes deployment
 
@@ -138,7 +139,7 @@ ingress.networking.k8s.io/dev-minimal-ingress created
 
 **NOTE**: if you get an error similar to the following, wait for a bit and try again.
 
-```
+```text
 Error from server (InternalError): error when creating "STDIN": Internal error occurred: failed calling webhook "validate.nginx.ingress.kubernetes.io": Post https://ingress-nginx-controller-admission.ingress-nginx.svc:443/extensions/v1beta1/ingresses?timeout=30s: service "ingress-nginx-controller-admission" not found
 ```
 
@@ -157,7 +158,7 @@ NAME                    READY   STATUS    RESTARTS   AGE
 ctfd-78f786956f-wvbkt   1/1     Running   0          7m9s
 ```
 
-**Tip:** you can continuously watch the resource by adding the `--watch` paramater to the end of the command. 
+**Tip:** you can continuously watch the resource by adding the `--watch` paramater to the end of the command.
 
 Seeing results of the application (CTFd) component.
 
@@ -195,9 +196,9 @@ INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
 INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 ```
 
-The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal). Provided you have no other services running on port 443. Expect a warning about an invalid certificate. Depending on your browser, you may need to go into incognito mode to proceed. 
+The service is now ready at [kubernetes.docker.internal](http://kubernetes.docker.internal). Provided you have no other services running on port 443. Expect a warning about an invalid certificate. Depending on your browser, you may need to go into incognito mode to proceed.
 
-Register the first user that will act as admin of the CTF event. Use the email adres `jointcyberrange@admin.nl`, other email addresses won't register the account as admin since it is pre-configured. 
+Register the first user that will act as admin of the CTF event. Use the email adres `jointcyberrange@admin.nl`, other email addresses won't register the account as admin since it is pre-configured.
 
 When you logout of the admin account, you're able to register other accounts and login as player.
 
@@ -244,6 +245,7 @@ The following command will delete all resources related to CTFd. Make sure to ma
 ```Bash
 kubectl delete -f k8s/
 ```
+
 ### 1.7.2. Delete the namespace and Ingress controller
 
 Uninstall the NGINX ingress controller.
@@ -261,11 +263,13 @@ If you really want to be sure all resources are deleted or when you run into tro
 When deploying the CTFd platform locally there is a possibility that there is a conflict with other running applications on the host system. The CTFd platform listens on the port 443. When on Windows you can use the `Get-NetTCPConnection` command to see if there are other processes that run on port 443.
 
 Open Powershell and run this command:
+
 ```Powershell
 try {Get-NetTCPConnection -ea stop -LocalPort 443 | select local*,state,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}}} catch {write-output "Port 443 not in use"}
 ```
+
 You now see a list of processes that run on the 443 port or a message showing that port 443 is not in use.
-If there is more than 1 process that runs on the 443 port there is a possibility that the other processes are hijacking the http request to the CTFd website. 
+If there is more than 1 process that runs on the 443 port there is a possibility that the other processes are hijacking the http request to the CTFd website.
 
 To resolve this issue you can close the other processes.
 
@@ -283,13 +287,13 @@ Docker desktop also provides logs for each container, though the messages may ar
 
 ### 1.8.3. NGINX ingress external IP pending
 
-If CTFd is not accessible, check if the Service of the NGINX ingress has an external IP entry for `localhost`. Command to check the status of the Ingress. 
+If CTFd is not accessible, check if the Service of the NGINX ingress has an external IP entry for `localhost`. Command to check the status of the Ingress.
 
 ```Bash
 kubectl get services -n ingress-nginx
 ```
 
-Desired output. 
+Desired output.
 
 ```Bash
 NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
@@ -297,7 +301,7 @@ ingress-nginx-controller             LoadBalancer   10.102.14.41     localhost  
 ingress-nginx-controller-admission   ClusterIP      10.101.177.213   <none>        443/TCP                      19h
 ```
 
-Actual output. 
+Actual output.
 
 ```Bash
 NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
@@ -305,16 +309,16 @@ ingress-nginx-controller             LoadBalancer   10.102.14.41     <pending>  
 ingress-nginx-controller-admission   ClusterIP      10.101.177.213   <none>        443/TCP                      19h
 ```
 
-Fix: If it is pending, remove Docker Desktop, remove all the folders listed below and reinstall. 
+Fix: If it is pending, remove Docker Desktop, remove all the folders listed below and reinstall.
 
-```
+```text
 %USERPROFILE%\AppData\Local\Docker
 %USERPROFILE%\AppData\Roaming\Docker
 %ProgramData%\Docker
 %ProgramFiles%\Docker
 ```
 
-## 1.9. Namespace stuck in termination.
+## 1.9. Namespace stuck in termination
 
 When a namespace is stuck in termination you can resolve it with the following oneliner. It will ask you to enter the name of the corresponding namespace you want to delete.
 

@@ -1,5 +1,5 @@
 # For more basic SSH challenges go to: https://jrtechs.net/open-source/teaching-ssh-through-a-ctf
-FROM debian:bullseye-slim
+FROM debian:11.3-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \ 
     openssh-server \
